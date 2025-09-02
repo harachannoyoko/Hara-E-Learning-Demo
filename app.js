@@ -31,18 +31,17 @@ localStorage.setItem('sess', JSON.stringify(state));
 
 
 // ยิง event login ไปที่ชีต
-  const body = new URLSearchParams({
-    event: 'login',
-    name: state.name,
-    employeeId: state.employeeId,
-    sessionId: state.sessionId,
-    extra: navigator.userAgent
-  });
+    const body = new URLSearchParams();
+  body.append("event", "login");
+  body.append("name", state.name);
+  body.append("employeeId", state.employeeId);
+  body.append("sessionId", state.sessionId);
+  body.append("userAgent", navigator.userAgent);
 
   await fetch(ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: body.toString()
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body
   }).catch(() => {});
 
 
@@ -56,20 +55,19 @@ const sess = JSON.parse(localStorage.getItem('sess') || '{}');
 if (!sess.sessionId) return alert('ยังไม่เริ่ม session');
 
 
-  const body = new URLSearchParams({
-    event: 'ping',
-    videoId: 'demo',
-    name: sess.name,
-    employeeId: sess.employeeId,
-    sessionId: sess.sessionId,
-    progress: '12.34',
-    note: 'test write'
-  });
+    const body = new URLSearchParams();
+  body.append("event", "ping");
+  body.append("videoId", "demo");
+  body.append("name", sess.name);
+  body.append("employeeId", sess.employeeId);
+  body.append("sessionId", sess.sessionId);
+  body.append("progress", "12.34");
+  body.append("note", "test write");
 
   await fetch(ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: body.toString()
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body
   }).catch(() => {});
 
 
@@ -85,3 +83,4 @@ if (sess.sessionId) pingBtn.disabled = false;
 } catch (e) {}
 
 })();
+
