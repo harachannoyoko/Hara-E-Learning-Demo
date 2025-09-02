@@ -1,86 +1,54 @@
-// ใส่ URL ของ GAS Web App ตรงนี้
-const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxSLjq843CFTjBwelljIKuIvX-AscZbtR6ZHAU8YXrZDVZLD-KeIJbw9GWtOPUgTNRiWQ/exec';
+// ==========================
+// Hara E-Learning Demo app.js
+// ==========================
 
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbw-XHnHj_RcnyayLMwYPQHl4DAybLyN4mayGqSYCAeCvi_h9ndlxaDfa0b5a5u2qANe2w/exec";
 
-const state = {
-sessionId: null,
-name: null,
-employeeId: null,
+let state = {
+  name: "",
+  employeeId: "",
+  sessionId: "",
+  videoId: "demo"
 };
 
+document.addEventListener("DOMContentLoaded", () => {
 
-function uid() {
-if (crypto && crypto.randomUUID) return crypto.randomUUID();
-return 'sess_' + Math.random().toString(36).slice(2);
-}
+  const loginForm = document.getElementById("loginForm");
+  const loginBtn = document.getElementById("loginBtn");
+  const pingBtn = document.getElementById("pingBtn");
 
+  // ---- Login Form Submit ----
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-const loginForm = document.getElementById('login');
-const pingBtn = document.getElementById('ping');
+    state.name = document.getElementById("name").value.trim();
+    state.employeeId = document.getElementById("employeeId").value.trim();
+    state.sessionId = Math.random().toString(36).substring(2, 10); // สร้าง session id ชั่วคราว
 
+    // ส่งข้อมูล Login → GAS
+    const loginUrl = `${ENDPOINT}?event=login&name=${encodeURIComponent(state.name)}&employeeId=${encodeURIComponent(state.employeeId)}&sessionId=${state.sessionId}&note=${encodeURIComponent(navigator.userAgent)}`;
+    fetch(loginUrl)
+      .then(r => r.json())
+      .then(console.log)
+      .catch(console.error);
 
-loginForm.addEventListener('submit', async (e) => {
-e.preventDefault();
-state.name = document.getElementById('name').value.trim();
-state.employeeId = document.getElementById('emp').value.trim();
-state.sessionId = uid();
+    alert(`Login สำเร็จ! Session: ${state.sessionId}`);
+  });
 
+  // ---- Ping Button ----
+  pingBtn.addEventListener("click", async () => {
+    if (!state.name || !state.employeeId || !state.sessionId) {
+      alert("กรุณา login ก่อนส่ง Ping!");
+      return;
+    }
 
-// เก็บไว้ให้หน้าอื่นใช้
-localStorage.setItem('sess', JSON.stringify(state));
+    const pingUrl = `${ENDPOINT}?event=ping&videoId=${state.videoId}&name=${encodeURIComponent(state.name)}&employeeId=${encodeURIComponent(state.employeeId)}&sessionId=${state.sessionId}&progress=12.34&note=test+write`;
+    fetch(pingUrl)
+      .then(r => r.json())
+      .then(console.log)
+      .catch(console.error);
 
+    alert("Ping ส่งเรียบร้อย!");
+  });
 
-// ยิง event login ไปที่ชีต
-    const body = new URLSearchParams();
-  body.append("event", "login");
-  body.append("name", state.name);
-  body.append("employeeId", state.employeeId);
-  body.append("sessionId", state.sessionId);
-  body.append("userAgent", navigator.userAgent);
-
-  await fetch(ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body
-  }).catch(() => {});
-
-
-pingBtn.disabled = false;
-alert('เริ่ม session แล้วงับ');
 });
-
-
-pingBtn.addEventListener('click', async () => {
-const sess = JSON.parse(localStorage.getItem('sess') || '{}');
-if (!sess.sessionId) return alert('ยังไม่เริ่ม session');
-
-
-    const body = new URLSearchParams();
-  body.append("event", "ping");
-  body.append("videoId", "demo");
-  body.append("name", sess.name);
-  body.append("employeeId", sess.employeeId);
-  body.append("sessionId", sess.sessionId);
-  body.append("progress", "12.34");
-  body.append("note", "test write");
-
-  await fetch(ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body
-  }).catch(() => {});
-
-
-alert('ส่ง ping แล้ว ลองไปดูในชีตแท็บ events');
-});
-
-
-// auto restore session ถ้ามี
-(function restore(){
-try {
-const sess = JSON.parse(localStorage.getItem('sess') || '{}');
-if (sess.sessionId) pingBtn.disabled = false;
-} catch (e) {}
-
-})();
-
