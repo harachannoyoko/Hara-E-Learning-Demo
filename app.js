@@ -2,7 +2,7 @@
 // Hara E-Learning Demo app.js
 // ==========================
 
-const ENDPOINT = "https://script.google.com/macros/s/AKfycbw-XHnHj_RcnyayLMwYPQHl4DAybLyN4mayGqSYCAeCvi_h9ndlxaDfa0b5a5u2qANe2w/exec";
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbwS39iIbUknf6rut2LLrAmVp3yKrx1_0Tq6Jx73NP-9wPfzvR8_mV7b4so_N34NoeHzJg/exec";
 
 let state = {
   name: "",
@@ -52,3 +52,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+
