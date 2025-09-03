@@ -46,10 +46,19 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnLogin").addEventListener("click", () => {
     const name = document.getElementById("name").value.trim();
     const empId = document.getElementById("employeeId").value.trim();
+
+    // ตรวจรหัสพนักงานเป็นตัวเลข 6 หลัก
+    const empIdPattern = /^\d{6}$/;
+
     if (!name || !empId) {
       logMessage("⚠️ ต้องกรอกชื่อและรหัสพนักงานก่อนนะ");
       return;
     }
+    if (!empIdPattern.test(empId)) {
+      logMessage("⚠️ รหัสพนักงานต้องเป็นตัวเลข 6 หลักเท่านั้น");
+      return;
+    }
+
     login(name, empId);
   });
 
