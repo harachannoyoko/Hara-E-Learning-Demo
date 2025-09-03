@@ -4,35 +4,24 @@
   <meta charset="UTF-8">
   <title>Hara E-Learning</title>
   <style>
-    body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background:#f4f7fb; color:#333; margin:0; padding:0; }
+    body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background:#f4f7fb; margin:0; padding:0; }
     header { background:#4a90e2; color:white; padding:1rem; text-align:center; font-size:1.5rem; font-weight:bold; }
-    main { max-width: 600px; margin:2rem auto; background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-    label { display:block; margin:0.5rem 0 0.2rem; }
-    input, select { width:100%; padding:0.6rem; border-radius:6px; border:1px solid #ccc; margin-bottom:1rem; }
-    button { display:inline-block; width:100%; margin:0.3rem 0; padding:0.8rem; font-size:1rem; border:none; border-radius:8px; cursor:pointer; transition:0.2s; }
+    main { max-width:600px; margin:2rem auto; background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+    button { padding:0.7rem; margin:0.5rem 0; width:100%; font-size:1rem; border:none; border-radius:6px; cursor:pointer; }
     button:hover { opacity:0.9; }
-    #log { margin-top:1.5rem; padding:1rem; background:#f9f9f9; border:1px dashed #aaa; border-radius:8px; font-family:monospace; font-size:0.9rem; max-height:250px; overflow-y:auto; }
-    button#btnLogin { background:#4CAF50; color:white; }
-    button#btnPing { background:#ff9800; color:white; }
-    button#btnQuiz { background:#2196F3; color:white; }
+    #btnPing { background:#ff9800; color:white; }
+    #btnQuiz { background:#2196F3; color:white; }
+    #log { margin-top:1rem; padding:1rem; background:#f9f9f9; border:1px dashed #aaa; border-radius:8px; font-family:monospace; font-size:0.9rem; max-height:200px; overflow-y:auto; }
   </style>
 </head>
 <body>
   <header>📚 Hara E-Learning</header>
   <main>
-    <label for="name">ชื่อ-นามสกุล</label>
-    <input type="text" id="name" placeholder="กรอกชื่อ-นามสกุล">
-
-    <label for="employeeId">รหัสพนักงาน</label>
-    <input type="text" id="employeeId" placeholder="เช่น 123456">
-
-    <label for="videoId">รหัสวิดีโอ</label>
-    <input type="text" id="videoId" placeholder="Video001">
-
-    <button id="btnLogin">🚀 เข้าสู่ระบบ</button>
-    <button id="btnPing">📡 ส่ง Progress (Ping)</button>
+    <h3>ยินดีต้อนรับ <span id="displayName"></span>!</h3>
+    <p>วิดีโอการเรียน: <strong>Video ID: VID001</strong></p>
+    <button id="btnPing">📡 อัปเดต Progress</button>
     <button id="btnQuiz">📝 ทำ Quiz</button>
-
+    <button id="btnLogout">🚪 ออกจากระบบ</button>
     <div id="log">Log จะแสดงที่นี่…</div>
   </main>
 
