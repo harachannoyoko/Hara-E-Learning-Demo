@@ -1,4 +1,4 @@
-const ENDPOINT_REG = "YOUR_REGISTRATION_GAS_URL"; // ใส่ URL GAS ของ Registration
+const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbzsvHl_kbagbXJ2-lMWdsG2uXDqYgDlCAcAkwhpcNZ-ox8Xp4DzBWJJWP798XZFHHUpmg/exec"; // ใส่ URL GAS ของ Registration
 
 function logMessage(msg){
   const logBox = document.getElementById("log");
@@ -43,4 +43,5 @@ document.addEventListener("DOMContentLoaded", ()=>{
   document.getElementById("btnBack").addEventListener("click", ()=>{
     window.location.href = "index.html"; // ลิงก์ไปหน้า Login
   });
+
 });
