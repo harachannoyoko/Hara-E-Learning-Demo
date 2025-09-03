@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Registration - Hara E-Learning</title>
+<style>
+body { font-family:"Segoe UI", sans-serif; background:#f4f7fb; margin:0; padding:0;}
+main { max-width:500px; margin:2rem auto; background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+label { display:block; margin:0.5rem 0 0.2rem;}
+input { width:100%; padding:0.6rem; border-radius:6px; border:1px solid #ccc; margin-bottom:1rem;}
+button { width:100%; padding:0.8rem; border:none; border-radius:8px; background:#4CAF50; color:white; font-size:1rem; cursor:pointer;}
+button:hover { opacity:0.9;}
+#log { margin-top:1rem; padding:1rem; background:#f9f9f9; border:1px dashed #aaa; border-radius:8px; font-family:monospace; font-size:0.9rem; max-height:200px; overflow-y:auto;}
+</style>
+</head>
+<body>
+<main>
+<h2 style="text-align:center;">ลงทะเบียนเข้าเรียน</h2>
+<form id="registerForm">
+<label>ชื่อ-นามสกุล</label><input type="text" id="name" required>
+<label>รหัสพนักงาน (6 หลัก)</label><input type="text" id="employeeId" maxlength="6" pattern="\d{6}" required>
+<label>ตำแหน่ง (ตัวย่อ)</label><input type="text" id="position" required>
+<label>ส่วนงาน (ตัวย่อ)</label><input type="text" id="department" required>
+<label>อีเมล์บริษัท</label><input type="email" id="email" required>
+<label>เบอร์โทรศัพท์</label><input type="tel" id="phone" required>
+<button type="submit">ส่งลงทะเบียน</button>
+</form>
+<div id="log">Log จะแสดงที่นี่…</div>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
