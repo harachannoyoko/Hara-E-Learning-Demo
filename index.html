@@ -1,29 +1,74 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>Hara E-Learning Demo</title>
-<style>
-body { font-family: "Segoe UI", sans-serif; background: #f4f7fb; margin:0; padding:0;}
-header { background:#4a90e2; color:white; padding:1rem; text-align:center; font-size:1.5rem; font-weight:bold;}
-main { max-width:500px; margin:2rem auto; background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-button { width:100%; padding:0.8rem; margin:0.5rem 0; border:none; border-radius:8px; cursor:pointer; font-size:1rem;}
-button:hover { opacity:0.9;}
-#btnLogin { background:#4CAF50; color:white;}
-#btnRegister { background:#2196F3; color:white;}
-</style>
+  <meta charset="UTF-8">
+  <title>Hara E-Learning Login</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f7fb;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 400px;
+      margin: 5% auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h1 { text-align:center; color:#4a90e2; }
+    label { display:block; margin-top:1rem; }
+    input {
+      width:100%;
+      padding:0.6rem;
+      margin-top:0.3rem;
+      border-radius:6px;
+      border:1px solid #ccc;
+    }
+    button {
+      width:100%;
+      margin-top:1.2rem;
+      padding:0.8rem;
+      background:#4CAF50;
+      color:#fff;
+      font-size:1rem;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+    }
+    button:hover { background:#45a049; }
+    #log { margin-top:1rem; font-family:monospace; font-size:0.9rem; color:#333; }
+    #dashboard { display:none; margin-top:2rem; }
+    #dashboard h2 { color:#2196F3; text-align:center; }
+    #dashboard button { background:#2196F3; margin-top:0.5rem; }
+  </style>
 </head>
 <body>
-<header>📚 Hara E-Learning Demo</header>
-<main>
-<button id="btnRegister">📝 ลงทะเบียนเข้าเรียน</button>
-<button id="btnLogin">🚀 เข้าสู่ระบบ</button>
-<div id="log" style="margin-top:1rem; padding:1rem; background:#f9f9f9; border:1px dashed #aaa; border-radius:8px; font-family:monospace; font-size:0.9rem; max-height:200px; overflow-y:auto;"></div>
-</main>
-<script src="app.js"></script>
-<script>
-document.getElementById("btnRegister").addEventListener("click", ()=>{ window.location.href="registration.html"; });
-document.getElementById("btnLogin").addEventListener("click", ()=>{ logMessage("ยังไม่ได้เชื่อมระบบ Login สำหรับเดโม"); });
-</script>
+  <div class="container">
+    <h1>📚 Hara E-Learning</h1>
+
+    <!-- Login Form -->
+    <div id="loginForm">
+      <label for="name">ชื่อ-นามสกุล</label>
+      <input type="text" id="name" placeholder="กรอกชื่อ-นามสกุล">
+
+      <label for="employeeId">รหัสพนักงาน (6 หลัก)</label>
+      <input type="text" id="employeeId" placeholder="เช่น 000001">
+
+      <button id="btnLogin">เข้าสู่ระบบ</button>
+      <div id="log"></div>
+    </div>
+
+    <!-- Dashboard หลัง Login -->
+    <div id="dashboard">
+      <h2>🎓 ยินดีต้อนรับ, <span id="userName"></span></h2>
+      <button id="btnStartLearning">เริ่มเรียน</button>
+      <button id="btnLogout">ออกจากระบบ</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
