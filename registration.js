@@ -1,28 +1,6 @@
-const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbyk7I7l1884g-xu_VS92znYM3V51_fl1NLHkkJTv4_3E7nNv3qjWp_wyuaOMKYyAYWf3g/exec"; // ใส่ URL GAS ของ Registration
+const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbzPgMepC4JuX_4C49_2OqzmlfdLwUYgxOITZGG1wRsosu-5fxugrM-XReCLF7oHEAGwqg/exec";
 
-function logMessage(msg, isSensitive=false){
-  const logBox=document.getElementById("log");
-  let displayMsg=msg;
-  if(isSensitive){ displayMsg=msg.split(":")[0]+": [ข้อมูลถูกซ่อนไว้]"; }
-  if(logBox){ logBox.innerHTML+=displayMsg+"<br>"; logBox.scrollTop=logBox.scrollHeight; } 
-  else { console.log(displayMsg); }
-}
-
-function sendRegistration(data){
-  fetch(ENDPOINT_REG,{
-    method:"POST",
-    body: JSON.stringify(data)
-  })
-  .then(r=>r.json())
-  .then(res=>{
-    logMessage("✅ สมัครเรียบร้อย", true);
-  })
-  .catch(err=>{
-    logMessage("❌ Registration Error", true);
-  });
-}
-
-function submitRegistration(){
+document.getElementById("btnSubmit").addEventListener("click", () => {
   const data = {
     name: document.getElementById("name").value.trim(),
     employeeId: document.getElementById("employeeId").value.trim(),
@@ -32,35 +10,37 @@ function submitRegistration(){
     phone: document.getElementById("phone").value.trim()
   };
 
-  if(!data.name || !data.employeeId){
-    logMessage("⚠️ ต้องกรอกชื่อและรหัสพนักงานด้วยนะ");
+  if(!data.name || !data.employeeId || !data.position || !data.department || !data.email || !data.phone){
+    log("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง");
     return;
   }
 
-  fetch(ENDPOINT_REG, {
-    method: "POST",
-    body: JSON.stringify(data)
-  })
-  .then(r => r.json())
-  .then(d => logMessage("✅ สมัครเรียบร้อย: "+ JSON.stringify(d.data)))
-  .catch(err => logMessage("❌ Error: "+err));
-}
+  const callbackName = "registerCallback";
+  window[callbackName] = function(res){
+    if(res.status === "success"){
+      log("✅ สมัครเรียบร้อย!");
+      document.getElementById("btnReset").click();
+    } else {
+      log("❌ เกิดข้อผิดพลาด: " + res.message);
+    }
+    delete window[callbackName];
+    document.body.removeChild(script);
+  };
 
-function resetForm(){
-  ["name","employeeId","position","department","email","phone"].forEach(id=>{
-    document.getElementById(id).value = "";
-  });
-  logMessage("♻ ฟอร์มถูกรีเซ็ตเรียบร้อย");
-}
-
-document.addEventListener("DOMContentLoaded", ()=>{
-  document.getElementById("btnSubmit").addEventListener("click", submitRegistration);
-  document.getElementById("btnReset").addEventListener("click", resetForm);
-  document.getElementById("btnBack").addEventListener("click", ()=>{
-    window.location.href = "index.html"; // ลิงก์ไปหน้า Login
-  });
-
+  const script = document.createElement("script");
+  script.src = `${ENDPOINT_REG}?name=${encodeURIComponent(data.name)}&employeeId=${encodeURIComponent(data.employeeId)}&position=${encodeURIComponent(data.position)}&department=${encodeURIComponent(data.department)}&email=${encodeURIComponent(data.email)}&phone=${encodeURIComponent(data.phone)}&callback=${callbackName}`;
+  document.body.appendChild(script);
 });
 
+document.getElementById("btnReset").addEventListener("click", () => {
+  document.querySelectorAll("input").forEach(i => i.value = "");
+  log("♻ รีเซ็ตข้อมูลเรียบร้อย");
+});
 
+document.getElementById("btnBack").addEventListener("click", () => {
+  window.location.href = "index.html";
+});
 
+function log(msg){
+  document.getElementById("log").innerHTML = msg;
+}
