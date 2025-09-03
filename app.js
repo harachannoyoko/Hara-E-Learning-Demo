@@ -4,8 +4,12 @@ const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbzsvHl_kbagbXJ2-lM
 // === ฟังก์ชัน log ===
 function logMessage(msg){
   const logBox=document.getElementById("log");
-  if(logBox){ logBox.innerHTML+=msg+"<br>"; logBox.scrollTop=logBox.scrollHeight; } 
-  else { console.log(msg); }
+  if(logBox){ 
+    logBox.innerHTML+=msg+"<br>"; 
+    logBox.scrollTop=logBox.scrollHeight; 
+  } else { 
+    console.log(msg); 
+  }
 }
 
 // === ฟังก์ชันเช็ค Login ===
@@ -36,14 +40,21 @@ function checkLogin(name, empId){
 
 // === DOM Ready ===
 document.addEventListener("DOMContentLoaded", ()=>{
-  document.getElementById("btnLogin").addEventListener("click", ()=>{
-    const name = document.getElementById("name").value.trim();
-    const empId = document.getElementById("employeeId").value.trim();
-    checkLogin(name, empId);
-  });
+  const btnLogin = document.getElementById("btnLogin");
+  const btnRegister = document.getElementById("btnRegister");
 
-  document.getElementById("btnRegister").addEventListener("click", ()=>{
-    // กลับไปหน้าลงทะเบียน
-    window.location.href = "registration.html";
-  });
+  if(btnLogin){
+    btnLogin.addEventListener("click", ()=>{
+      const name = document.getElementById("name").value.trim();
+      const empId = document.getElementById("employeeId").value.trim();
+      checkLogin(name, empId);
+    });
+  }
+
+  if(btnRegister){
+    btnRegister.addEventListener("click", ()=>{
+      // กลับไปหน้าลงทะเบียน
+      window.location.href = "registration.html";
+    });
+  }
 });
