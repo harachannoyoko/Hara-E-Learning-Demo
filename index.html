@@ -27,17 +27,8 @@
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    label {
-      display: block;
-      margin: 0.5rem 0 0.2rem;
-    }
-    input {
-      width: 100%;
-      padding: 0.6rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      margin-bottom: 1rem;
-    }
+    label { display: block; margin: 0.5rem 0 0.2rem; }
+    input { width: 100%; padding: 0.6rem; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 1rem; }
     button {
       display: inline-block;
       width: 100%;
@@ -51,13 +42,12 @@
     }
     button#btnLogin { background: #4CAF50; color: white; }
     button#btnLogin:hover { background: #45a049; }
-
     button#btnPing { background: #ff9800; color: white; }
     button#btnPing:hover { background: #e68900; }
-
     button#btnQuiz { background: #2196F3; color: white; }
     button#btnQuiz:hover { background: #1976D2; }
-
+    button#btnReset { background: #9C27B0; color: white; }
+    button#btnReset:hover { background: #7B1FA2; }
     #log {
       margin-top: 1.5rem;
       padding: 1rem;
@@ -77,12 +67,16 @@
     <label for="name">ชื่อ-นามสกุล</label>
     <input type="text" id="name" placeholder="กรอกชื่อ-นามสกุล">
 
-    <label for="employeeId">รหัสพนักงาน</label>
-    <input type="text" id="employeeId" placeholder="เช่น EMP001">
+    <label for="employeeId">รหัสพนักงาน (6 หลัก)</label>
+    <input type="text" id="employeeId" placeholder="เช่น 123456">
+
+    <label for="videoId">Video ID</label>
+    <input type="text" id="videoId" placeholder="เช่น VID001">
 
     <button id="btnLogin">🚀 เริ่มเรียน (Login)</button>
     <button id="btnPing">📡 ส่ง Ping (จำลอง progress)</button>
     <button id="btnQuiz">📝 ทำ Quiz</button>
+    <button id="btnReset">🔄 Reset / Resume Session</button>
 
     <div id="log">Log จะแสดงที่นี่…</div>
   </main>
