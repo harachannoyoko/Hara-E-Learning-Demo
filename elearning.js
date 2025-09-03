@@ -1,60 +1,54 @@
-// === ENDPOINT สำหรับ E-Learning Event ===
+// === ENDPOINT E-Learning Sheet ===
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbxYvpBYs3UhTOK-9ZMSlOGP_kilYysbCylKdNc5mMmCDHZ7MXclyktt4-U4eYwl-NDvuw/exec";
 
 // === ฟังก์ชัน log ===
 function logMessage(msg){
   const logBox=document.getElementById("log");
-  logBox.innerHTML += msg+"<br>";
-  logBox.scrollTop = logBox.scrollHeight;
+  if(logBox){ logBox.innerHTML+=msg+"<br>"; logBox.scrollTop=logBox.scrollHeight; } 
+  else { console.log(msg); }
 }
 
-// === ฟังก์ชันส่ง Event ===
+// === ส่ง event ไป GAS ===
 function sendEvent(params){
   const query = Object.keys(params)
     .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
     .join("&");
   const url = `${ENDPOINT}?${query}`;
-  fetch(url, { method:"GET" })
-    .then(r => r.json())
-    .then(data => { logMessage("✅ ส่ง event: "+JSON.stringify(params)); })
-    .catch(err => { logMessage("❌ Event Error: "+err); });
+  fetch(url,{method:"GET"})
+    .then(r=>r.json())
+    .then(data=>{ logMessage("✅ Event ส่งเรียบร้อย: "+JSON.stringify(params)); })
+    .catch(err=>{ logMessage("❌ Error: "+err); });
 }
 
 // === Actions ===
-function login(name, empId) { sendEvent({ event:"login", name, employeeId:empId }); }
-function ping(name, empId, videoId, progress) { 
-  sendEvent({ event:"ping", name, employeeId:empId, videoId, progress: progress.toFixed(2) }); 
+function ping(progress){ 
+  sendEvent({ event:"ping", videoId:"VID001", name:sessionStorage.getItem("name"), employeeId:sessionStorage.getItem("employeeId"), progress:progress.toFixed(2) });
 }
-function quiz(name, empId, videoId, quizId, correct) { 
-  sendEvent({ event:"quiz", name, employeeId:empId, videoId, quizId, quizCorrect:correct }); 
+function quiz(questionId, correct){ 
+  sendEvent({ event:"quiz", videoId:"VID001", name:sessionStorage.getItem("name"), employeeId:sessionStorage.getItem("employeeId"), quizId:questionId, quizCorrect:correct }); 
 }
 
 // === DOM Ready ===
 document.addEventListener("DOMContentLoaded", ()=>{
-  const btnLogin = document.getElementById("btnLogin");
-  const btnPing  = document.getElementById("btnPing");
-  const btnQuiz  = document.getElementById("btnQuiz");
+  // ตรวจ session
+  const name = sessionStorage.getItem("name");
+  const empId = sessionStorage.getItem("employeeId");
+  if(!name || !empId){
+    alert("⚠️ ยังไม่ได้ล็อกอิน! กลับไปหน้าแรก");
+    window.location.href = "index.html";
+    return;
+  }
+  document.getElementById("displayName").textContent = name;
 
-  btnLogin.addEventListener("click", ()=>{
-    const name = document.getElementById("name").value.trim();
-    const empId = document.getElementById("employeeId").value.trim();
-    if(!name || !empId){ logMessage("⚠️ กรุณากรอกชื่อและรหัสพนักงาน"); return; }
-    login(name, empId);
-  });
+  // ปุ่ม Ping
+  document.getElementById("btnPing").addEventListener("click", ()=>{ ping(Math.random()*100); });
 
-  btnPing.addEventListener("click", ()=>{
-    const name = document.getElementById("name").value.trim();
-    const empId = document.getElementById("employeeId").value.trim();
-    const videoId = document.getElementById("videoId").value.trim();
-    if(!name || !empId || !videoId){ logMessage("⚠️ ต้องกรอกทุกช่อง"); return; }
-    ping(name, empId, videoId, Math.random()*100); // จำลอง progress %
-  });
+  // ปุ่ม Quiz
+  document.getElementById("btnQuiz").addEventListener("click", ()=>{ quiz("Q1", Math.random()>0.5); });
 
-  btnQuiz.addEventListener("click", ()=>{
-    const name = document.getElementById("name").value.trim();
-    const empId = document.getElementById("employeeId").value.trim();
-    const videoId = document.getElementById("videoId").value.trim();
-    if(!name || !empId || !videoId){ logMessage("⚠️ ต้องกรอกทุกช่อง"); return; }
-    quiz(name, empId, videoId, "Q1", Math.random()>0.5); // จำลอง Quiz Correct
+  // Logout
+  document.getElementById("btnLogout").addEventListener("click", ()=>{
+    sessionStorage.clear();
+    window.location.href = "index.html";
   });
 });
