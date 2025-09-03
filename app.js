@@ -1,4 +1,4 @@
-const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbx0O6LI4F-JfaUAltcCdW8tJa-5CoO6tMyky06pLD0Dd9lfZTOadf1bKsgeGkpcRvYDbQ/exec"; // ใส่ URL ของ Web App
+const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbwDAv6cBATAro8N9XmB627d9DKlorqM2aaY2ZyAjuUgxSU6-Ivez-K8GeuP1wjXRLpaTw/exec"; // ใส่ URL ของ Web App
 
 function logMessage(msg){
   const logBox = document.getElementById("log");
@@ -42,5 +42,6 @@ document.addEventListener("DOMContentLoaded", ()=>{
     window.location.href = "registration.html";
   });
 });
+
 
 
