@@ -1,9 +1,25 @@
 const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbyk7I7l1884g-xu_VS92znYM3V51_fl1NLHkkJTv4_3E7nNv3qjWp_wyuaOMKYyAYWf3g/exec"; // ใส่ URL GAS ของ Registration
 
-function logMessage(msg){
-  const logBox = document.getElementById("log");
-  logBox.innerHTML += msg + "<br>";
-  logBox.scrollTop = logBox.scrollHeight;
+function logMessage(msg, isSensitive=false){
+  const logBox=document.getElementById("log");
+  let displayMsg=msg;
+  if(isSensitive){ displayMsg=msg.split(":")[0]+": [ข้อมูลถูกซ่อนไว้]"; }
+  if(logBox){ logBox.innerHTML+=displayMsg+"<br>"; logBox.scrollTop=logBox.scrollHeight; } 
+  else { console.log(displayMsg); }
+}
+
+function sendRegistration(data){
+  fetch(ENDPOINT_REG,{
+    method:"POST",
+    body: JSON.stringify(data)
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    logMessage("✅ สมัครเรียบร้อย", true);
+  })
+  .catch(err=>{
+    logMessage("❌ Registration Error", true);
+  });
 }
 
 function submitRegistration(){
@@ -45,5 +61,6 @@ document.addEventListener("DOMContentLoaded", ()=>{
   });
 
 });
+
 
 
