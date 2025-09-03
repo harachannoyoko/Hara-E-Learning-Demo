@@ -1,10 +1,14 @@
+// กำหนด endpoint ของ Google Apps Script (หรือ backend ที่พี่ใช้)
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbxYvpBYs3UhTOK-9ZMSlOGP_kilYysbCylKdNc5mMmCDHZ7MXclyktt4-U4eYwl-NDvuw/exec";
+
+// ฟังก์ชัน log ลงกล่องข้อความ
 function logMessage(msg) {
   const logBox = document.getElementById("log");
   logBox.innerHTML += msg + "<br>";
   logBox.scrollTop = logBox.scrollHeight;
 }
 
-// ปรับ sendEvent ให้ log ลงหน้าด้วย
+// ฟังก์ชันยิง event ไปยัง GAS
 function sendEvent(params) {
   const query = Object.keys(params)
     .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
@@ -24,6 +28,20 @@ function sendEvent(params) {
     });
 }
 
+// ฟังก์ชันย่อยแต่ละ action
+function login(name, empId) {
+  sendEvent({ action: "login", name, empId });
+}
+
+function ping(progress) {
+  sendEvent({ action: "ping", progress: progress.toFixed(2) });
+}
+
+function quiz(questionId, correct) {
+  sendEvent({ action: "quiz", qid: questionId, correct });
+}
+
+// Event listener ตอนกดปุ่ม
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnLogin").addEventListener("click", () => {
     const name = document.getElementById("name").value.trim();
