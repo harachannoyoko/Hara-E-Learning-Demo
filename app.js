@@ -28,17 +28,17 @@ function sendEvent(params) {
     });
 }
 
-function login(name, empId) {
+function login(name, empId, videoId='') {
   currentSessionId = Date.now() + "_" + Math.floor(Math.random() * 1000);
-  sendEvent({ action: "login", name, empId });
+  sendEvent({ event: "login", name, employeeId: empId, videoId });
 }
 
-function ping(progress, videoId = '') {
-  sendEvent({ action: "ping", progress: progress.toFixed(2), videoId });
+function ping(progress, videoId='') {
+  sendEvent({ event: "ping", progress: progress.toFixed(2), videoId });
 }
 
-function quiz(questionId, correct, videoId = '') {
-  sendEvent({ action: "quiz", qid: questionId, correct, videoId });
+function quiz(quizId, quizCorrect, videoId='') {
+  sendEvent({ event: "quiz", quizId, quizCorrect, videoId });
 }
 
 function resetSession() {
@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnLogin").addEventListener("click", () => {
     const name = document.getElementById("name").value.trim();
     const empId = document.getElementById("employeeId").value.trim();
+    const videoId = document.getElementById("videoId").value.trim();
     const empIdPattern = /^\d{6}$/;
 
     if (!name || !empId) {
@@ -64,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    login(name, empId);
+    login(name, empId, videoId);
   });
 
   document.getElementById("btnPing").addEventListener("click", () => {
