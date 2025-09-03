@@ -2,11 +2,32 @@
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbxYvpBYs3UhTOK-9ZMSlOGP_kilYysbCylKdNc5mMmCDHZ7MXclyktt4-U4eYwl-NDvuw/exec";
 
 // === ฟังก์ชัน log ===
-function logMessage(msg){
+function logMessage(msg, isSensitive=false){
   const logBox=document.getElementById("log");
-  if(logBox){ logBox.innerHTML+=msg+"<br>"; logBox.scrollTop=logBox.scrollHeight; } 
-  else { console.log(msg); }
+  let displayMsg=msg;
+  if(isSensitive){ displayMsg=msg.split(":")[0]+": [ข้อมูลถูกซ่อนไว้]"; }
+  if(logBox){ logBox.innerHTML+=displayMsg+"<br>"; logBox.scrollTop=logBox.scrollHeight; } 
+  else { console.log(displayMsg); }
 }
+
+function sendEvent(params){
+  const query=Object.keys(params)
+    .map(k=>`${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
+    .join("&");
+  const url=`${ENDPOINT}?${query}`;
+  fetch(url, { method:"GET" })
+    .then(r=>r.json())
+    .then(data=>{
+      logMessage(`✅ Event '${params.event || params.quizId}' ส่งสำเร็จ`, true);
+    })
+    .catch(err=>{
+      logMessage("❌ Event Error", true);
+    });
+}
+
+function login(name, empId){ sendEvent({ event:"login", name, employeeId:empId }); }
+function ping(progress){ sendEvent({ event:"ping", progress:progress.toFixed(2) }); }
+function quiz(questionId, correct){ sendEvent({ event:"quiz", quizId:questionId, quizCorrect:correct }); }
 
 // === ส่ง event ไป GAS ===
 function sendEvent(params){
