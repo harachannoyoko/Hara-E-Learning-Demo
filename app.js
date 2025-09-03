@@ -1,4 +1,4 @@
-const ENDPOINT_REG = "YOUR_REGISTRATION_GAS_URL_HERE"; // ใส่ URL ของ Web App
+const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbx0O6LI4F-JfaUAltcCdW8tJa-5CoO6tMyky06pLD0Dd9lfZTOadf1bKsgeGkpcRvYDbQ/exec"; // ใส่ URL ของ Web App
 
 function logMessage(msg){
   const logBox = document.getElementById("log");
@@ -42,3 +42,4 @@ document.addEventListener("DOMContentLoaded", ()=>{
     window.location.href = "registration.html";
   });
 });
+
