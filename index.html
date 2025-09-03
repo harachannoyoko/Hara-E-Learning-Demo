@@ -4,70 +4,33 @@
   <meta charset="UTF-8">
   <title>Hara E-Learning Login</title>
   <style>
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: #f4f7fb;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 400px;
-      margin: 5% auto;
-      background: #fff;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    h1 { text-align:center; color:#4a90e2; }
-    label { display:block; margin-top:1rem; }
-    input {
-      width:100%;
-      padding:0.6rem;
-      margin-top:0.3rem;
-      border-radius:6px;
-      border:1px solid #ccc;
-    }
-    button {
-      width:100%;
-      margin-top:1.2rem;
-      padding:0.8rem;
-      background:#4CAF50;
-      color:#fff;
-      font-size:1rem;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
-    }
-    button:hover { background:#45a049; }
-    #log { margin-top:1rem; font-family:monospace; font-size:0.9rem; color:#333; }
-    #dashboard { display:none; margin-top:2rem; }
-    #dashboard h2 { color:#2196F3; text-align:center; }
-    #dashboard button { background:#2196F3; margin-top:0.5rem; }
+    body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background:#f4f7fb; margin:0; padding:0; }
+    header { background:#4a90e2; color:white; padding:1rem; text-align:center; font-size:1.5rem; font-weight:bold; }
+    main { max-width:400px; margin:2rem auto; background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+    label { display:block; margin:0.5rem 0 0.2rem; }
+    input { width:100%; padding:0.6rem; border-radius:6px; border:1px solid #ccc; margin-bottom:1rem; }
+    button { width:100%; padding:0.8rem; border:none; border-radius:8px; cursor:pointer; margin:0.3rem 0; color:white; font-size:1rem;}
+    button#btnLogin { background:#4CAF50; }
+    button#btnLogin:hover { background:#45a049; }
+    button#btnRegister { background:#ff9800; }
+    button#btnRegister:hover { background:#e68900; }
+    #log { margin-top:1rem; padding:1rem; background:#f9f9f9; border:1px dashed #aaa; border-radius:8px; font-family:monospace; font-size:0.9rem; max-height:150px; overflow-y:auto;}
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>📚 Hara E-Learning</h1>
+  <header>📚 Hara E-Learning Login</header>
+  <main>
+    <label for="name">ชื่อ-นามสกุล</label>
+    <input type="text" id="name" placeholder="กรอกชื่อ-นามสกุล">
 
-    <!-- Login Form -->
-    <div id="loginForm">
-      <label for="name">ชื่อ-นามสกุล</label>
-      <input type="text" id="name" placeholder="กรอกชื่อ-นามสกุล">
+    <label for="employeeId">รหัสพนักงาน</label>
+    <input type="text" id="employeeId" placeholder="6 หลัก">
 
-      <label for="employeeId">รหัสพนักงาน (6 หลัก)</label>
-      <input type="text" id="employeeId" placeholder="เช่น 000001">
+    <button id="btnLogin">🚀 เข้าสู่ระบบ</button>
+    <button id="btnRegister">📝 ลงทะเบียนใหม่</button>
 
-      <button id="btnLogin">เข้าสู่ระบบ</button>
-      <div id="log"></div>
-    </div>
-
-    <!-- Dashboard หลัง Login -->
-    <div id="dashboard">
-      <h2>🎓 ยินดีต้อนรับ, <span id="userName"></span></h2>
-      <button id="btnStartLearning">เริ่มเรียน</button>
-      <button id="btnLogout">ออกจากระบบ</button>
-    </div>
-  </div>
+    <div id="log">Log จะแสดงที่นี่…</div>
+  </main>
 
   <script src="app.js"></script>
 </body>
