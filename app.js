@@ -1,84 +1,96 @@
-const ENDPOINT = "https://script.google.com/macros/s/AKfycbxYvpBYs3UhTOK-9ZMSlOGP_kilYysbCylKdNc5mMmCDHZ7MXclyktt4-U4eYwl-NDvuw/exec";
-let currentSessionId = null;
+// === ENDPOINT ===
+const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbzsvHl_kbagbXJ2-lMWdsG2uXDqYgDlCAcAkwhpcNZ-ox8Xp4DzBWJJWP798XZFHHUpmg/exec"; // Registration Sheet
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbxYvpBYs3UhTOK-9ZMSlOGP_kilYysbCylKdNc5mMmCDHZ7MXclyktt4-U4eYwl-NDvuw/exec"; // E-Learning Sheet
 
-function logMessage(msg) {
-  const logBox = document.getElementById("log");
-  logBox.innerHTML += msg + "<br>";
-  logBox.scrollTop = logBox.scrollHeight;
-}
-
-function sendEvent(params) {
-  if (currentSessionId) params.sessionId = currentSessionId;
-
-  const query = Object.keys(params)
-    .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
-    .join("&");
-
-  const url = `${ENDPOINT}?${query}`;
-
-  return fetch(url, { method: "GET" })
-    .then(r => r.json())
-    .then(data => {
-      console.log("Response:", data);
-      logMessage("✅ ส่ง event: " + JSON.stringify(params));
-    })
-    .catch(err => {
-      console.error("Fetch error:", err);
-      logMessage("❌ Error: " + err);
-    });
-}
-
-function login(name, empId, videoId='') {
-  currentSessionId = Date.now() + "_" + Math.floor(Math.random() * 1000);
-  sendEvent({ event: "login", name, employeeId: empId, videoId });
-}
-
-function ping(progress, videoId='') {
-  sendEvent({ event: "ping", progress: progress.toFixed(2), videoId });
-}
-
-function quiz(quizId, quizCorrect, videoId='') {
-  sendEvent({ event: "quiz", quizId, quizCorrect, videoId });
-}
-
-function resetSession() {
-  if (!currentSessionId) {
-    logMessage("⚠️ ยังไม่มี session ให้ resume, ต้อง Login ก่อน");
-    return;
+// === ฟังก์ชัน log ===
+function logMessage(msg){
+  const logBox=document.getElementById("log");
+  if(logBox){
+    logBox.innerHTML+=msg+"<br>";
+    logBox.scrollTop=logBox.scrollHeight;
+  } else {
+    console.log(msg);
   }
-  logMessage("🔄 Session ถูก reset/resume: " + currentSessionId);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("btnLogin").addEventListener("click", () => {
-    const name = document.getElementById("name").value.trim();
-    const empId = document.getElementById("employeeId").value.trim();
-    const videoId = document.getElementById("videoId").value.trim();
-    const empIdPattern = /^\d{6}$/;
-
-    if (!name || !empId) {
-      logMessage("⚠️ ต้องกรอกชื่อและรหัสพนักงานก่อนนะ");
-      return;
-    }
-    if (!empIdPattern.test(empId)) {
-      logMessage("⚠️ รหัสพนักงานต้องเป็นตัวเลข 6 หลักเท่านั้น");
-      return;
-    }
-
-    login(name, empId, videoId);
+// === ฟังก์ชันส่ง Registration ===
+function sendRegistration(data){
+  fetch(ENDPOINT_REG,{
+    method:"POST",
+    body: JSON.stringify(data)
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    logMessage("✅ ลงทะเบียนเรียบร้อย: "+JSON.stringify(data));
+  })
+  .catch(err=>{
+    logMessage("❌ Registration Error: "+err);
   });
+}
 
-  document.getElementById("btnPing").addEventListener("click", () => {
-    const videoId = document.getElementById("videoId").value.trim();
-    ping(Math.random() * 100, videoId);
-  });
+// === ฟังก์ชันส่ง Event E-Learning ===
+function sendEvent(params){
+  const query = Object.keys(params)
+    .map(k=>`${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
+    .join("&");
+  const url = `${ENDPOINT}?${query}`;
+  fetch(url, { method:"GET" })
+    .then(r=>r.json())
+    .then(data=>{ logMessage("✅ ส่ง event: "+JSON.stringify(params)); })
+    .catch(err=>{ logMessage("❌ Event Error: "+err); });
+}
 
-  document.getElementById("btnQuiz").addEventListener("click", () => {
-    const videoId = document.getElementById("videoId").value.trim();
-    quiz("Q1", Math.random() > 0.5, videoId);
-  });
+// === E-Learning Actions ===
+function login(name, empId){ sendEvent({ event:"login", name, employeeId:empId }); }
+function ping(progress){ sendEvent({ event:"ping", progress:progress.toFixed(2) }); }
+function quiz(questionId, correct){ sendEvent({ event:"quiz", quizId:questionId, quizCorrect:correct }); }
 
-  document.getElementById("btnReset").addEventListener("click", () => {
-    resetSession();
-  });
+// === DOM Ready ===
+document.addEventListener("DOMContentLoaded", ()=>{
+  // --- Registration Page ---
+  const form=document.getElementById("registerForm");
+  if(form){
+    form.addEventListener("submit",(e)=>{
+      e.preventDefault();
+      const data={
+        name: document.getElementById("name").value.trim(),
+        employeeId: document.getElementById("employeeId").value.trim(),
+        position: document.getElementById("position").value.trim(),
+        department: document.getElementById("department").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        phone: document.getElementById("phone").value.trim()
+      };
+      if(!data.name||!data.employeeId||!data.position||!data.department||!data.email||!data.phone){
+        logMessage("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง");
+        return;
+      }
+      sendRegistration(data);
+      form.reset();
+    });
+  }
+
+  // --- E-Learning Page ---
+  const btnLogin = document.getElementById("btnLogin");
+  const btnPing = document.getElementById("btnPing");
+  const btnQuiz = document.getElementById("btnQuiz");
+
+  if(btnLogin){
+    btnLogin.addEventListener("click",()=>{
+      const name = document.getElementById("name").value.trim();
+      const empId = document.getElementById("employeeId").value.trim();
+      if(!name||!empId){
+        logMessage("⚠️ ต้องกรอกชื่อและรหัสพนักงานก่อนนะ");
+        return;
+      }
+      login(name, empId);
+    });
+  }
+
+  if(btnPing){
+    btnPing.addEventListener("click",()=>{ ping(Math.random()*100); }); // สุ่ม progress
+  }
+
+  if(btnQuiz){
+    btnQuiz.addEventListener("click",()=>{ quiz("Q1", Math.random()>0.5); }); // จำลอง quiz
+  }
 });
