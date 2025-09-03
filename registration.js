@@ -1,4 +1,4 @@
-const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbzsvHl_kbagbXJ2-lMWdsG2uXDqYgDlCAcAkwhpcNZ-ox8Xp4DzBWJJWP798XZFHHUpmg/exec"; // ใส่ URL GAS ของ Registration
+const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbztSpiCBWgX7d28YiQFuZbe5ssk0gkTJTss2hkoFZSBfQWKsjik2JiB0VdYL3z2DH_f5w/exec"; // ใส่ URL GAS ของ Registration
 
 function logMessage(msg){
   const logBox = document.getElementById("log");
@@ -45,3 +45,4 @@ document.addEventListener("DOMContentLoaded", ()=>{
   });
 
 });
+
