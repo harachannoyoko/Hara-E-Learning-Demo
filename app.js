@@ -1,58 +1,59 @@
 // === ENDPOINT ===
-const ENDPOINT = "https://script.google.com/macros/s/AKfycbxYvpBYs3UhTOK-9ZMSlOGP_kilYysbCylKdNc5mMmCDHZ7MXclyktt4-U4eYwl-NDvuw/exec"; // E-Learning Sheet
+const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbzsvHl_kbagbXJ2-lMWdsG2uXDqYgDlCAcAkwhpcNZ-ox8Xp4DzBWJJWP798XZFHHUpmg/exec"; // Registration Sheet
 
-// === ฟังก์ชัน log ===
 function logMessage(msg){
   const logBox = document.getElementById("log");
   if(logBox){
-    logBox.innerHTML += msg + "<br>";
+    logBox.innerHTML += msg+"<br>";
     logBox.scrollTop = logBox.scrollHeight;
-  } else {
-    console.log(msg);
-  }
+  } else console.log(msg);
 }
 
-// === ฟังก์ชันส่ง Event E-Learning ===
-function sendEvent(params){
-  const query = Object.keys(params)
-    .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
-    .join("&");
-  const url = `${ENDPOINT}?${query}`;
-
-  fetch(url, { method: "GET" })
-    .then(r => r.json())
-    .then(data => { logMessage("✅ ส่ง event: "+JSON.stringify(params)); })
-    .catch(err => { logMessage("❌ Event Error: "+err); });
-}
-
-// === E-Learning Actions ===
-function login(name, empId){ sendEvent({ event:"login", name, employeeId:empId }); }
-function ping(progress){ sendEvent({ event:"ping", progress:progress.toFixed(2) }); }
-function quiz(questionId, correct){ sendEvent({ event:"quiz", quizId:questionId, quizCorrect:correct }); }
-
-// === DOM Ready ===
-document.addEventListener("DOMContentLoaded", ()=>{
-  const btnLogin = document.getElementById("btnLogin");
-  const btnPing = document.getElementById("btnPing");
-  const btnQuiz = document.getElementById("btnQuiz");
-
-  if(btnLogin){
-    btnLogin.addEventListener("click", ()=>{
-      const name = document.getElementById("name").value.trim();
-      const empId = document.getElementById("employeeId").value.trim();
-      if(!name || !empId){
-        logMessage("⚠️ ต้องกรอกชื่อและรหัสพนักงานก่อนนะ");
-        return;
+// --- ตรวจสอบ Login ---
+function checkLogin(name, employeeId){
+  const url = `${ENDPOINT_REG}?action=check&name=${encodeURIComponent(name)}&employeeId=${encodeURIComponent(employeeId)}`;
+  fetch(url)
+    .then(r=>r.json())
+    .then(res=>{
+      if(res.status==="success" && res.exists){
+        logMessage("✅ ล็อกอินสำเร็จ!");
+        showDashboard(name);
+      } else {
+        logMessage("❌ ชื่อหรือรหัสพนักงานไม่ถูกต้อง");
       }
-      login(name, empId);
-    });
-  }
+    })
+    .catch(err=>{ logMessage("❌ Error: "+err); });
+}
 
-  if(btnPing){
-    btnPing.addEventListener("click", ()=>{ ping(Math.random()*100); }); // สุ่ม progress
-  }
+// --- แสดง Dashboard ---
+function showDashboard(name){
+  document.getElementById("loginForm").style.display="none";
+  document.getElementById("dashboard").style.display="block";
+  document.getElementById("userName").innerText = name;
+}
 
-  if(btnQuiz){
-    btnQuiz.addEventListener("click", ()=>{ quiz("Q1", Math.random()>0.5); }); // จำลอง quiz
-  }
+// --- DOM Ready ---
+document.addEventListener("DOMContentLoaded", ()=>{
+  document.getElementById("btnLogin").addEventListener("click", ()=>{
+    const name = document.getElementById("name").value.trim();
+    const empId = document.getElementById("employeeId").value.trim();
+    if(!name || !empId){
+      logMessage("⚠️ กรุณากรอกชื่อและรหัสพนักงานก่อนเข้าสู่ระบบ");
+      return;
+    }
+    checkLogin(name, empId);
+  });
+
+  document.getElementById("btnLogout").addEventListener("click", ()=>{
+    document.getElementById("dashboard").style.display="none";
+    document.getElementById("loginForm").style.display="block";
+    document.getElementById("name").value="";
+    document.getElementById("employeeId").value="";
+    logMessage("🔹 ออกจากระบบแล้ว");
+  });
+
+  document.getElementById("btnStartLearning").addEventListener("click", ()=>{
+    // ลิงก์ไปหน้าหลัก E-Learning
+    window.location.href = "elearning.html";
+  });
 });
