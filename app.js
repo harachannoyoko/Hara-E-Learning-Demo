@@ -41,6 +41,14 @@ function quiz(questionId, correct, videoId = '') {
   sendEvent({ action: "quiz", qid: questionId, correct, videoId });
 }
 
+function resetSession() {
+  if (!currentSessionId) {
+    logMessage("⚠️ ยังไม่มี session ให้ resume, ต้อง Login ก่อน");
+    return;
+  }
+  logMessage("🔄 Session ถูก reset/resume: " + currentSessionId);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnLogin").addEventListener("click", () => {
     const name = document.getElementById("name").value.trim();
@@ -60,10 +68,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("btnPing").addEventListener("click", () => {
-    ping(Math.random() * 100, 'VID001'); // ใส่ videoId ตัวอย่าง
+    const videoId = document.getElementById("videoId").value.trim();
+    ping(Math.random() * 100, videoId);
   });
 
   document.getElementById("btnQuiz").addEventListener("click", () => {
-    quiz("Q1", Math.random() > 0.5, 'VID001');
+    const videoId = document.getElementById("videoId").value.trim();
+    quiz("Q1", Math.random() > 0.5, videoId);
+  });
+
+  document.getElementById("btnReset").addEventListener("click", () => {
+    resetSession();
   });
 });
