@@ -1,5 +1,8 @@
-// กำหนด endpoint ของ Google Apps Script (หรือ backend ที่พี่ใช้)
+// กำหนด endpoint ของ Google Apps Script
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbxYvpBYs3UhTOK-9ZMSlOGP_kilYysbCylKdNc5mMmCDHZ7MXclyktt4-U4eYwl-NDvuw/exec";
+
+// เก็บ session ปัจจุบัน
+let currentSessionId = null;
 
 // ฟังก์ชัน log ลงกล่องข้อความ
 function logMessage(msg) {
@@ -8,8 +11,12 @@ function logMessage(msg) {
   logBox.scrollTop = logBox.scrollHeight;
 }
 
-// ฟังก์ชันยิง event ไปยัง GAS
+// ฟังก์ชันยิง event ไป GAS พร้อม session
 function sendEvent(params) {
+  if (currentSessionId) {
+    params.sessionId = currentSessionId;
+  }
+
   const query = Object.keys(params)
     .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
     .join("&");
@@ -30,6 +37,8 @@ function sendEvent(params) {
 
 // ฟังก์ชันย่อยแต่ละ action
 function login(name, empId) {
+  // สร้าง session ใหม่ทุกครั้ง login
+  currentSessionId = Date.now() + "_" + Math.floor(Math.random() * 1000);
   sendEvent({ action: "login", name, empId });
 }
 
@@ -46,8 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnLogin").addEventListener("click", () => {
     const name = document.getElementById("name").value.trim();
     const empId = document.getElementById("employeeId").value.trim();
-
-    // ตรวจรหัสพนักงานเป็นตัวเลข 6 หลัก
     const empIdPattern = /^\d{6}$/;
 
     if (!name || !empId) {
@@ -63,10 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.getElementById("btnPing").addEventListener("click", () => {
-    ping(Math.random() * 100); // จำลอง progress แบบสุ่ม %
+    ping(Math.random() * 100);
   });
 
   document.getElementById("btnQuiz").addEventListener("click", () => {
-    quiz("Q1", Math.random() > 0.5); // จำลองตอบถูก/ผิด
+    quiz("Q1", Math.random() > 0.5);
   });
 });
