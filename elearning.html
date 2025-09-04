@@ -2,30 +2,105 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Hara E-Learning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 Hara E-Learning</title>
   <style>
-    body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background:#f4f7fb; margin:0; padding:0; }
-    header { background:#4a90e2; color:white; padding:1rem; text-align:center; font-size:1.5rem; font-weight:bold; }
-    main { max-width:600px; margin:2rem auto; background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-    button { padding:0.7rem; margin:0.5rem 0; width:100%; font-size:1rem; border:none; border-radius:6px; cursor:pointer; }
-    button:hover { opacity:0.9; }
-    #btnPing { background:#ff9800; color:white; }
-    #btnQuiz { background:#2196F3; color:white; }
-    #btnLogout { background:#f44336; color:white; }
-    #log { margin-top:1rem; padding:1rem; background:#f9f9f9; border:1px dashed #aaa; border-radius:8px; font-family:monospace; font-size:0.9rem; max-height:200px; overflow-y:auto; }
-    video { width:100%; margin-top:1rem; border-radius:8px; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f7fb;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #4a90e2;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    main {
+      max-width: 700px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    #player {
+      width: 100%;
+      height: 360px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    h3 {
+      margin-top: 0;
+    }
+    button {
+      padding: 0.7rem;
+      margin: 0.5rem 0;
+      width: 100%;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    #btnPing { background: #ff9800; color: white; }
+    #btnQuiz { background: #2196F3; color: white; }
+    #btnLogout { background: #e53935; color: white; }
+    .progress-container {
+      margin: 1rem 0;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background: #eee;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: #4a90e2;
+      transition: width 0.3s ease;
+    }
+    #progress-text {
+      font-weight: bold;
+      margin-top: 0.5rem;
+      display: block;
+      text-align: right;
+    }
+    #log {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f9f9f9;
+      border: 1px dashed #aaa;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      max-height: 200px;
+      overflow-y: auto;
+    }
   </style>
 </head>
 <body>
   <header>📚 Hara E-Learning</header>
   <main>
     <h3>ยินดีต้อนรับ <span id="displayName"></span>!</h3>
-    <p>วิดีโอการเรียน: <strong>VID001</strong></p>
-    
-    <video id="videoPlayer" controls>
-      <source id="videoSource" src="" type="video/mp4">
-      เบราว์เซอร์ของคุณไม่รองรับวิดีโอ
-    </video>
+    <div id="player"></div>
+
+    <div class="progress-container">
+      <label>Progress:</label>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <span id="progress-text">0%</span>
+    </div>
 
     <button id="btnPing">📡 อัปเดต Progress</button>
     <button id="btnQuiz">📝 ทำ Quiz</button>
@@ -34,6 +109,7 @@
     <div id="log">Log จะแสดงที่นี่…</div>
   </main>
 
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script src="elearning.js"></script>
 </body>
 </html>
