@@ -1,5 +1,5 @@
-const GAS_VIDEO_URL = "https://script.google.com/macros/s/AKfycbwbXhYyNQQRfBipc6muQvcU_euLgTBqSI7WjpZ1OZ-3uvh1qheuu32JFVCJW_NJlF-8bA/exec";
-const GAS_PROGRESS_URL = "https://script.google.com/macros/s/1PfNRwkbaTJ5drL6LgCijGCj2JvWjRKtO86_fsMAg9jcwukyNnX7Vtetc/exec";
+const GAS_VIDEO_URL = "https://script.google.com/macros/s/AKfycbxmntqVmcHVX3hT5QpJRl9_oqf_aL0CwnfRKwzOx7fMKupnhwLOfgkclRwNKeMMdc3XOQ/exec";
+const GAS_PROGRESS_URL = "https://script.google.com/macros/s/AKfycbwVoTw-KtgOWaM-erR6H8MvP8huBf5W_n4TPRAWPqnvyJQosZEKYfUTejbMHPf3pQwJ/exec";
 
 const VIDEO_ID = "dQw4w9WgXcQ"; // Rick Roll
 const USER_NAME = "Hara";
