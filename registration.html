@@ -8,8 +8,7 @@
     body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background:#f4f7fb; margin:0; padding:0; }
     main { max-width:500px; margin:2rem auto; background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
     label { display:block; margin:0.5rem 0 0.2rem; }
-    input { width:100%; padding:0.6rem; border-radius:6px; border:1px solid #ccc; margin-bottom:0.2rem; }
-    .error-message { color:red; font-size:0.85rem; margin-bottom:0.8rem; display:block; }
+    input { width:100%; padding:0.6rem; border-radius:6px; border:1px solid #ccc; margin-bottom:1rem; }
     button { padding:0.8rem; margin:0.3rem 0; width:100%; border:none; border-radius:8px; cursor:pointer; transition:0.2s; font-size:1rem;}
     button#btnSubmit { background:#4CAF50; color:white; }
     button#btnReset { background:#f44336; color:white; }
@@ -26,7 +25,6 @@
 
     <label>รหัสพนักงาน (6 หลัก)</label>
     <input type="text" id="employeeId">
-    <span class="error-message" id="employee-error"></span>
 
     <label>ตำแหน่ง</label>
     <input type="text" id="position">
@@ -36,7 +34,6 @@
 
     <label>อีเมล์บริษัท</label>
     <input type="email" id="email">
-    <span class="error-message" id="email-error"></span>
 
     <label>เบอร์โทรศัพท์</label>
     <input type="text" id="phone">
@@ -48,6 +45,38 @@
     <div id="log">Log จะแสดงที่นี่…</div>
   </main>
 
-  <script src="registration.js"></script>
+  <script>
+    function jsonpCallback(result) {
+      const log = document.getElementById("log");
+      log.textContent = JSON.stringify(result, null, 2);
+    }
+
+    document.getElementById("btnSubmit").addEventListener("click", () => {
+      const name = document.getElementById("name").value;
+      const employeeId = document.getElementById("employeeId").value;
+      const position = document.getElementById("position").value;
+      const department = document.getElementById("department").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+
+      const script = document.createElement("script");
+      script.src = `https://script.google.com/macros/s/AKfycbzP2fm5Io9vZvP8GC8pQ7ybdgVZ1QotfUEeGzKomoWZ5xihWmiIqdhrkDz06RXoLBrNvg/exec?name=${encodeURIComponent(name)}&employeeId=${encodeURIComponent(employeeId)}&position=${encodeURIComponent(position)}&department=${encodeURIComponent(department)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}&callback=jsonpCallback`;
+      document.body.appendChild(script);
+    });
+
+    document.getElementById("btnReset").addEventListener("click", () => {
+      document.getElementById("name").value = "";
+      document.getElementById("employeeId").value = "";
+      document.getElementById("position").value = "";
+      document.getElementById("department").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("phone").value = "";
+      document.getElementById("log").textContent = "Log จะแสดงที่นี่…";
+    });
+
+    document.getElementById("btnBack").addEventListener("click", () => {
+      window.location.href = "index.html";
+    });
+  </script>
 </body>
 </html>
