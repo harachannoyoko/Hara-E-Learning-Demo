@@ -12,7 +12,7 @@ document.getElementById("btnSubmit").addEventListener("click", function() {
     return;
   }
 
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwbXhYyNQQRfBipc6muQvcU_euLgTBqSI7WjpZ1OZ-3uvh1qheuu32JFVCJW_NJlF-8bA/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzGy4vmywtpUwNwW_vs80TslOWZSMA5tWwts7xxFuyHZKI94brQT3jOQ85-kyZx-ns5Uw/exec";
 
   // JSONP
   const callbackName = "jsonpCallback_" + Date.now();
@@ -39,3 +39,4 @@ document.getElementById("btnSubmit").addEventListener("click", function() {
   scriptTag.src = scriptURL + params;
   document.body.appendChild(scriptTag);
 });
+
