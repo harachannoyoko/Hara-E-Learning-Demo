@@ -46,3 +46,4 @@ function registerUser() {
   script.src = `${GAS_URL}?name=${name}&employeeId=${empId}&position=${pos}&department=${dept}&email=${email}&phone=${phone}&callback=${callbackName}`;
   document.body.appendChild(script);
 }
+
