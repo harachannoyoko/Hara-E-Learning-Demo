@@ -1,37 +1,41 @@
-document.getElementById("btnSubmit").addEventListener("click", function() {
-  var name = document.getElementById("name").value;
-  var employeeId = document.getElementById("employeeId").value;
-  var position = document.getElementById("position").value;
-  var department = document.getElementById("department").value;
-  var email = document.getElementById("email").value;
-  var phone = document.getElementById("phone").value;
-  var log = document.getElementById("log");
+const formElements = {
+  name: document.getElementById("name"),
+  employeeId: document.getElementById("employeeId"),
+  position: document.getElementById("position"),
+  department: document.getElementById("department"),
+  email: document.getElementById("email"),
+  phone: document.getElementById("phone"),
+  log: document.getElementById("log")
+};
 
-  var script = document.createElement("script");
-  var callbackName = "jsonpCallback_" + Date.now();
-
-  window[callbackName] = function(data) {
-    if (data.status === "added") {
-      log.textContent = "✅ ลงทะเบียนสำเร็จ!";
-    } else if (data.status === "duplicate") {
-      log.textContent = "⚠ ข้อมูลซ้ำ ไม่สามารถลงทะเบียนได้";
-    } else {
-      log.textContent = "❌ เกิดข้อผิดพลาด";
-    }
-    // cleanup
-    delete window[callbackName];
-    document.body.removeChild(script);
+document.getElementById("btnSubmit").addEventListener("click", async () => {
+  const payload = {
+    name: formElements.name.value,
+    employeeId: formElements.employeeId.value,
+    position: formElements.position.value,
+    department: formElements.department.value,
+    email: formElements.email.value,
+    phone: formElements.phone.value
   };
 
-  var url = "https://script.google.com/macros/s/AKfycbwbXhYyNQQRfBipc6muQvcU_euLgTBqSI7WjpZ1OZ-3uvh1qheuu32JFVCJW_NJlF-8bA/exec" +
-            "?callback=" + callbackName +
-            "&name=" + encodeURIComponent(name) +
-            "&employeeId=" + encodeURIComponent(employeeId) +
-            "&position=" + encodeURIComponent(position) +
-            "&department=" + encodeURIComponent(department) +
-            "&email=" + encodeURIComponent(email) +
-            "&phone=" + encodeURIComponent(phone);
+  try {
+    const res = await fetch("YOUR_GAS_WEB_APP_EXEC_URL", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
 
-  script.src = url;
-  document.body.appendChild(script);
+    const data = await res.json();
+    if (data.status === "success") {
+      formElements.log.textContent = "✅ ลงทะเบียนสำเร็จ!";
+      // รีเซ็ตฟอร์ม
+      Object.values(formElements).forEach(el => { if(el.tagName==="INPUT") el.value = ""; });
+    } else {
+      formElements.log.textContent = "❌ เกิดข้อผิดพลาด";
+    }
+  } catch (err) {
+    formElements.log.textContent = "❌ เกิดข้อผิดพลาด: " + err;
+  }
 });
