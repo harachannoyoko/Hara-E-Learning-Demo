@@ -2,48 +2,97 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hara E-Learning</title>
   <style>
-    body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background:#f4f7fb; margin:0; padding:0; }
-    header { background:#4a90e2; color:white; padding:1rem; text-align:center; font-size:1.5rem; font-weight:bold; }
-    main { max-width:600px; margin:2rem auto; background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-    video { width:100%; border-radius:8px; margin-bottom:1rem; }
-    button { padding:0.7rem; margin:0.5rem 0; width:100%; font-size:1rem; border:none; border-radius:6px; cursor:pointer; }
-    button:hover { opacity:0.9; }
-    #btnPing { background:#ff9800; color:white; }
-    #btnQuiz { background:#2196F3; color:white; }
-    #btnLogout { background:#f44336; color:white; }
-    #btnComplete { background:#4CAF50; color:white; }
-    #progressContainer { margin-top:1rem; }
-    #progressBar { width:100%; height:20px; background:#ddd; border-radius:10px; overflow:hidden; margin-top:0.5rem; }
-    #progressFill { height:100%; width:0%; background:#4CAF50; transition:width 0.5s; }
-    #log { margin-top:1rem; padding:1rem; background:#f9f9f9; border:1px dashed #aaa; border-radius:8px; font-family:monospace; font-size:0.9rem; max-height:200px; overflow-y:auto; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f7fb;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #4a90e2;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    main {
+      max-width: 700px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    video {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    #progressDisplay {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+    button {
+      padding: 0.7rem;
+      margin: 0.5rem 0;
+      width: 100%;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    #saveProgressBtn {
+      background: #4CAF50;
+      color: white;
+    }
+    #btnLogout {
+      background: #f44336;
+      color: white;
+    }
+    #log {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f9f9f9;
+      border: 1px dashed #aaa;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      max-height: 150px;
+      overflow-y: auto;
+    }
   </style>
 </head>
 <body>
   <header>📚 Hara E-Learning</header>
   <main>
     <h3>ยินดีต้อนรับ <span id="displayName"></span>!</h3>
-    <p>วิดีโอการเรียน: <strong>Video ID: VID001</strong></p>
+    <p>Video ID: <strong id="videoIdLabel"></strong></p>
 
     <!-- Video Player -->
-    <video id="trainingVideo" controls>
-      <source src="https://drive.google.com/uc?export=download&id=13puKcmpSmgCDFydEccWTG_kC4w0aW8xK" type="video/mp4">
-      เบราว์เซอร์ของคุณไม่รองรับวิดีโอ
+    <video id="learningVideo" controls>
+      <source 
+        src="https://script.google.com/macros/s/AKfycbyiZeKZD8FgZOUL2Nlh2pyypb1cPU7iG9tMXrx_KHgPNSpEIMlS0BAo9MYengtpyyKDlA/exec?id=13puKcmpSmgCDFydEccWTG_kC4w0aW8xK" 
+        type="video/mp4">
+      เบราว์เซอร์ของคุณไม่รองรับ video tag
     </video>
 
-    <!-- Progress Display -->
-    <div id="progressContainer">
-      <p>Progress: <span id="progressText">0%</span></p>
-      <div id="progressBar">
-        <div id="progressFill"></div>
-      </div>
-    </div>
+    <!-- Progress -->
+    <div id="progressDisplay">Progress: 0%</div>
 
-    <button id="btnComplete">✅ Complete</button>
-    <button id="btnPing">📡 อัปเดต Progress</button>
-    <button id="btnQuiz">📝 ทำ Quiz</button>
+    <!-- Buttons -->
+    <button id="saveProgressBtn">💾 บันทึก Progress</button>
     <button id="btnLogout">🚪 ออกจากระบบ</button>
+
+    <!-- Log -->
     <div id="log">Log จะแสดงที่นี่…</div>
   </main>
 
