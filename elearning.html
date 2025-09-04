@@ -94,6 +94,13 @@
     <h3>ยินดีต้อนรับ <span id="displayName"></span>!</h3>
     <div id="player"></div>
 
+    <div class="video-container">
+  <h2 id="videoTitle">กำลังโหลด...</h2>
+  <iframe id="videoFrame" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+  <button id="saveProgressBtn">บันทึกความคืบหน้า</button>
+</div>
+
+
     <div class="progress-container">
       <label>Progress:</label>
       <div class="progress-bar">
@@ -101,6 +108,7 @@
       </div>
       <span id="progress-text">0%</span>
     </div>
+    
 
     <button id="btnPing">📡 อัปเดต Progress</button>
     <button id="btnQuiz">📝 ทำ Quiz</button>
