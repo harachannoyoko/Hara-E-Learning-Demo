@@ -1,76 +1,80 @@
-// === CONFIG ===
+// ---------------------- CONFIG ----------------------
 const GAS_PROGRESS_URL = "https://script.google.com/macros/s/AKfycbzTTyobSPZ_Gg-elLDRvbP2HlrCkZEbN_I2Fs7Fx_yQnIsE5km_ObUplyD_cFwcs9x8/exec";
+const VIDEO_ID = "13puKcmpSmgCDFydEccWTG_kC4w0aW8xK";
 
-// === ELEMENTS ===
-const video = document.getElementById('trainingVideo');
-const progressText = document.getElementById('progressText');
-const progressFill = document.getElementById('progressFill');
-const logDiv = document.getElementById('log');
-const btnComplete = document.getElementById('btnComplete');
+// *** NOTE ***
+// Session ID, Employee ID, และ Name สามารถดึงจาก sessionStorage หรือจากระบบ login จริง
+const SESSION_ID = sessionStorage.getItem("sessionId") || "S001";
+const EMPLOYEE_ID = sessionStorage.getItem("employeeId") || "EMP001";
+const USER_NAME = sessionStorage.getItem("name") || "Test User";
 
-// === SESSION INFO ===
-const sessionId = localStorage.getItem('sessionId');
-const employeeId = localStorage.getItem('employeeId');
-const name = localStorage.getItem('name');
-const videoId = "VID001";
+// ---------------------- ELEMENTS ----------------------
+const video = document.getElementById('learningVideo');
+const progressDisplay = document.getElementById('progressDisplay');
+const saveProgressBtn = document.getElementById('saveProgressBtn');
+const logoutBtn = document.getElementById('btnLogout');
+const logBox = document.getElementById('log');
 
-document.getElementById('displayName').innerText = name || "ไม่ทราบชื่อ";
+document.getElementById('displayName').textContent = USER_NAME;
+document.getElementById('videoIdLabel').textContent = VIDEO_ID;
 
-// === LOG FUNCTION ===
-function addLog(msg) {
-  const time = new Date().toLocaleTimeString();
-  logDiv.innerHTML += `<div>[${time}] ${msg}</div>`;
-  logDiv.scrollTop = logDiv.scrollHeight;
+// ---------------------- FUNCTIONS ----------------------
+
+// Log Helper
+function log(message) {
+  console.log(message);
+  logBox.innerHTML += message + "<br>";
+  logBox.scrollTop = logBox.scrollHeight;
 }
 
-// === SAVE PROGRESS FUNCTION ===
-function saveProgress(progress) {
-  fetch(GAS_PROGRESS_URL, {
-    method: 'POST',
-    body: JSON.stringify({
-      sessionId,
-      employeeId,
-      name,
-      videoId,
-      progress
-    }),
-    headers: { 'Content-Type': 'application/json' }
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.status === "success") {
-      addLog(`Progress saved: ${progress}%`);
-    } else {
-      addLog(`Error saving progress`);
-    }
-  })
-  .catch(err => addLog("Fetch error: " + err));
-}
-
-// === AUTO UPDATE PROGRESS EVERY 10 SECONDS ===
-setInterval(() => {
-  if (!video.duration || video.duration === 0) return;
-  const progress = Math.floor((video.currentTime / video.duration) * 100);
-  progressText.textContent = progress + "%";
-  progressFill.style.width = progress + "%";
-  saveProgress(progress);
-}, 10000);
-
-// === COMPLETE BUTTON ===
-btnComplete.addEventListener('click', () => {
-  saveProgress(100);
-  progressText.textContent = "100%";
-  progressFill.style.width = "100%";
-  addLog("✅ Video marked as complete");
+// Update progress display
+video.addEventListener('timeupdate', () => {
+  if (!video.duration) return;
+  const progress = (video.currentTime / video.duration) * 100;
+  progressDisplay.textContent = `Progress: ${progress.toFixed(2)}%`;
 });
 
-// === LOGOUT ===
-document.getElementById('btnLogout').addEventListener('click', () => {
-  localStorage.clear();
+// Save progress to Google Sheet via GAS
+async function saveProgress() {
+  if (!video.duration) {
+    alert("วิดีโอยังโหลดไม่เสร็จ");
+    return;
+  }
+
+  const progress = (video.currentTime / video.duration) * 100;
+
+  const payload = {
+    sessionId: SESSION_ID,
+    name: USER_NAME,
+    employeeId: EMPLOYEE_ID,
+    videoId: VIDEO_ID,
+    progress: progress.toFixed(2),
+    event: "progress"
+  };
+
+  log("กำลังบันทึก Progress...");
+  try {
+    await fetch(GAS_PROGRESS_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    log("✅ Progress ถูกบันทึกแล้ว: " + progress.toFixed(2) + "%");
+    alert("Progress ถูกบันทึกเรียบร้อยแล้ว!");
+  } catch (error) {
+    log("❌ Error: " + error.message);
+    alert("เกิดข้อผิดพลาดในการบันทึก Progress");
+  }
+}
+
+// Logout
+logoutBtn.addEventListener('click', () => {
+  sessionStorage.clear();
   window.location.href = "index.html";
 });
 
-// === QUIZ BUTTON ===
-document.getElementById('btnQuiz').addEventListener('click', () => {
-  window.location.href = "quiz.html"; // สร้างหน้า quiz ต่อภายหลัง
-});
+// Event Listeners
+saveProgressBtn.addEventListener('click', saveProgress);
