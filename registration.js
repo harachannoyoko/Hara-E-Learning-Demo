@@ -1,3 +1,4 @@
+// ----------------- Submit -----------------
 document.getElementById("btnSubmit").addEventListener("click", function() {
   const name = document.getElementById("name").value.trim();
   const employeeId = document.getElementById("employeeId").value.trim();
@@ -12,23 +13,16 @@ document.getElementById("btnSubmit").addEventListener("click", function() {
     return;
   }
 
-  const scriptURL = "https://script.google.com/macros/s/AKfycbzGy4vmywtpUwNwW_vs80TslOWZSMA5tWwts7xxFuyHZKI94brQT3jOQ85-kyZx-ns5Uw/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwbXhYyNQQRfBipc6muQvcU_euLgTBqSI7WjpZ1OZ-3uvh1qheuu32JFVCJW_NJlF-8bA/exec";
 
-  // JSONP
   const callbackName = "jsonpCallback_" + Date.now();
   window[callbackName] = function(response) {
     if (response.status === "success") {
       log.textContent = "✅ ลงทะเบียนสำเร็จ!";
-      document.getElementById("name").value = "";
-      document.getElementById("employeeId").value = "";
-      document.getElementById("position").value = "";
-      document.getElementById("department").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("phone").value = "";
+      document.getElementById("btnReset").click(); // รีเซ็ตอัตโนมัติหลังลงทะเบียน
     } else {
       log.textContent = "❌ ลงทะเบียนล้มเหลว!";
     }
-    // ลบ script หลังโหลดเสร็จ
     document.body.removeChild(scriptTag);
     delete window[callbackName];
   };
@@ -40,3 +34,18 @@ document.getElementById("btnSubmit").addEventListener("click", function() {
   document.body.appendChild(scriptTag);
 });
 
+// ----------------- Reset -----------------
+document.getElementById("btnReset").addEventListener("click", function() {
+  document.getElementById("name").value = "";
+  document.getElementById("employeeId").value = "";
+  document.getElementById("position").value = "";
+  document.getElementById("department").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("log").textContent = "Log จะแสดงที่นี่…";
+});
+
+// ----------------- Back to Login -----------------
+document.getElementById("btnBack").addEventListener("click", function() {
+  window.location.href = "index.html"; // ลิงก์กลับหน้า Login
+});
