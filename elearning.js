@@ -1,50 +1,75 @@
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwbXhYyNQQRfBipc6muQvcU_euLgTBqSI7WjpZ1OZ-3uvh1qheuu32JFVCJW_NJlF-8bA/exec";
+// URL ของ Google Apps Script
+const GAS_VIDEO_URL = "https://script.google.com/macros/s/AKfycbwbXhYyNQQRfBipc6muQvcU_euLgTBqSI7WjpZ1OZ-3uvh1qheuu32JFVCJW_NJlF-8bA/exec";
+const GAS_PROGRESS_URL = "https://script.google.com/macros/s/1PfNRwkbaTJ5drL6LgCijGCj2JvWjRKtO86_fsMAg9jcwukyNnX7Vtetc/exec";
 
-// ใส่ Video ID ที่ได้จาก YouTube
-const VIDEO_ID = "dQw4w9WgXcQ"; 
+// ค่า Video ID (ตัวอย่าง Rick Roll)
+const VIDEO_ID = "dQw4w9WgXcQ";
 
-// โหลดข้อมูลวิดีโอ
-async function loadVideo(videoId) {
-  const res = await fetch(`${GAS_URL}?id=${videoId}`);
-  const data = await res.json();
-  console.log("Video Info:", data);
+// โหลดข้อมูลวิดีโอผ่าน GAS (ซ่อน API Key)
+async function fetchVideoDetails() {
+    try {
+        const response = await fetch(`${GAS_VIDEO_URL}?videoId=${VIDEO_ID}`);
+        const data = await response.json();
 
-  if (data.items && data.items.length > 0) {
-    const title = data.items[0].snippet.title;
-    const duration = data.items[0].contentDetails.duration;
-    document.getElementById("video-title").innerText = title;
-    document.getElementById("video-player").src = `https://www.youtube.com/embed/${videoId}`;
-    console.log(`Duration: ${duration}`);
-  } else {
-    alert("Video not found or invalid Video ID");
-  }
+        if (data.error) {
+            console.error("Error fetching video details:", data.error);
+            alert("ไม่สามารถโหลดข้อมูลวิดีโอได้");
+            return;
+        }
+
+        // อัปเดต UI
+        document.getElementById("videoTitle").innerText = data.title;
+        document.getElementById("videoFrame").src = `https://www.youtube.com/embed/${VIDEO_ID}`;
+    } catch (error) {
+        console.error("Fetch video failed:", error);
+    }
 }
 
-// ส่ง Progress
-async function sendProgress(progress) {
-  const payload = {
-    name: "Hara",
-    employeeId: "EMP001",
-    videoId: VIDEO_ID,
-    sessionId: "SESSION123",
-    progress: progress
-  };
-
-  const res = await fetch(GAS_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-
-  const result = await res.json();
-  console.log("Progress Response:", result);
+// บันทึกความคืบหน้าการเรียน
+async function saveProgress(userId, progress) {
+    try {
+        const response = await fetch(GAS_PROGRESS_URL, {
+            method: "POST",
+            body: JSON.stringify({ userId, videoId: VIDEO_ID, progress }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const result = await response.json();
+        console.log("Progress saved:", result);
+    } catch (error) {
+        console.error("Error saving progress:", error);
+    }
 }
 
-// ทดสอบอัพเดท Progress ทุก ๆ 5 วินาที
-setInterval(() => {
-  const randomProgress = Math.floor(Math.random() * 100);
-  sendProgress(randomProgress);
-}, 5000);
+// โหลดความคืบหน้าที่เคยบันทึก
+async function loadProgress(userId) {
+    try {
+        const response = await fetch(`${GAS_PROGRESS_URL}?userId=${userId}&videoId=${VIDEO_ID}`);
+        const data = await response.json();
+        console.log("Loaded progress:", data);
+        return data.progress || 0;
+    } catch (error) {
+        console.error("Error loading progress:", error);
+        return 0;
+    }
+}
 
-// เรียกโหลดวิดีโอ
-loadVideo(VIDEO_ID);
+// เริ่มต้นเมื่อโหลดหน้าเสร็จ
+document.addEventListener("DOMContentLoaded", () => {
+    fetchVideoDetails();
+
+    const userId = "testUser001"; // สมมติ userId
+    loadProgress(userId).then(progress => {
+        if (progress > 0) {
+            alert(`คุณเคยเรียนถึง ${progress}% แล้ว`);
+        }
+    });
+
+    // ปุ่มบันทึกความคืบหน้า
+    document.getElementById("saveProgressBtn").addEventListener("click", () => {
+        const progress = Math.floor(Math.random() * 100); // สมมติ progress
+        saveProgress(userId, progress);
+        alert(`บันทึกความคืบหน้า: ${progress}%`);
+    });
+});
