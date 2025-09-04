@@ -1,4 +1,4 @@
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwbXhYyNQQRfBipc6muQvcU_euLgTBqSI7WjpZ1OZ-3uvh1qheuu32JFVCJW_NJlF-8bA/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbzP2fm5Io9vZvP8GC8pQ7ybdgVZ1QotfUEeGzKomoWZ5xihWmiIqdhrkDz06RXoLBrNvg/exec";
 
 const nameInput = document.getElementById("name");
 const empInput = document.getElementById("employeeId");
@@ -11,16 +11,11 @@ const log = document.getElementById("log");
 
 document.getElementById("btnSubmit").addEventListener("click", registerUser);
 document.getElementById("btnReset").addEventListener("click", () => {
-  nameInput.value = "";
-  empInput.value = "";
-  posInput.value = "";
-  deptInput.value = "";
-  emailInput.value = "";
-  phoneInput.value = "";
+  [nameInput, empInput, posInput, deptInput, emailInput, phoneInput].forEach(el => el.value = "");
   log.textContent = "ฟอร์มถูกรีเซ็ตแล้ว";
 });
 document.getElementById("btnBack").addEventListener("click", () => {
-  window.location.href = "index.html"; // เปลี่ยนเป็น Login page
+  window.location.href = "index.html"; // กลับสู่หน้า Login
 });
 
 function registerUser() {
@@ -32,14 +27,17 @@ function registerUser() {
   const phone = encodeURIComponent(phoneInput.value.trim());
 
   if (!name || !empId) {
-    log.textContent = "กรุณากรอก ชื่อ-รหัสพนักงาน ให้ครบ!";
+    log.textContent = "⚠ กรุณากรอก ชื่อ-รหัสพนักงาน ให้ครบ!";
     return;
   }
 
   const callbackName = "jsonpCallback_" + Date.now();
-  window[callbackName] = function(data){
-    if (data.status === "success") log.textContent = "✅ ลงทะเบียนสำเร็จ!";
-    else log.textContent = "❌ เกิดข้อผิดพลาด: " + (data.message || "ไม่ทราบ");
+  window[callbackName] = function (data) {
+    if (data.status === "success") {
+      log.textContent = "✅ " + data.message;
+    } else {
+      log.textContent = "❌ " + (data.message || "เกิดข้อผิดพลาด");
+    }
     delete window[callbackName];
     script.remove();
   };
