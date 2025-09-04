@@ -1,47 +1,66 @@
-// registration.js (JSONP Version)
+const formElements = {
+  name: document.getElementById("name"),
+  employeeId: document.getElementById("employeeId"),
+  position: document.getElementById("position"),
+  department: document.getElementById("department"),
+  email: document.getElementById("email"),
+  phone: document.getElementById("phone"),
+  log: document.getElementById("log")
+};
 
-document.getElementById('btnSubmit').addEventListener('click', function() {
-  const name = document.getElementById('name').value.trim();
-  const employeeId = document.getElementById('employeeId').value.trim();
+const btnSubmit = document.getElementById("btnSubmit");
+const btnReset = document.getElementById("btnReset");
+const btnBack = document.getElementById("btnBack");
 
-  if(!name || !employeeId){
-    alert("กรุณากรอกชื่อและรหัสพนักงาน");
-    return;
-  }
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwbXhYyNQQRfBipc6muQvcU_euLgTBqSI7WjpZ1OZ-3uvh1qheuu32JFVCJW_NJlF-8bA/exec";
 
-  // สร้าง callback function แบบ global
-  window.handleRegistrationResponse = function(response){
-    if(response.status === "found"){
-      alert("มีข้อมูลอยู่แล้ว!");
-    } else {
-      alert("ลงทะเบียนสำเร็จ!");
-    }
-    // ทำความสะอาด script tag
-    const script = document.getElementById('jsonpScript');
-    if(script) script.remove();
+function logMessage(msg) {
+  formElements.log.innerText = msg;
+}
+
+function submitForm() {
+  const params = {
+    callback: "handleResponse",
+    name: formElements.name.value,
+    employeeId: formElements.employeeId.value,
+    position: formElements.position.value,
+    department: formElements.department.value,
+    email: formElements.email.value,
+    phone: formElements.phone.value
   };
 
-  // สร้าง script tag เพื่อเรียก JSONP
-  const script = document.createElement('script');
-  script.id = 'jsonpScript';
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbwWYf-Q4oeT_NR0EihEwuqs3Jgm8Lbd_eUs2vaLUHmFotkOPwIw2k_jiwhQxT4NM3yJbg/exec"; // ใส่ URL GAS ของพี่ตรงนี้
-  script.src = `${GAS_URL}?callback=handleRegistrationResponse&name=${encodeURIComponent(name)}&employeeId=${encodeURIComponent(employeeId)}`;
+  // สร้าง script tag สำหรับ JSONP
+  const script = document.createElement("script");
+  const query = Object.keys(params)
+    .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
+    .join("&");
+  script.src = `${GAS_URL}?${query}`;
   document.body.appendChild(script);
+}
+
+// callback ของ JSONP
+function handleResponse(response) {
+  if (response.status === "found") {
+    logMessage("ข้อมูลนี้มีอยู่แล้วในระบบ ✅");
+  } else if (response.status === "added") {
+    logMessage("ลงทะเบียนสำเร็จ 🎉");
+    btnReset.click(); // รีเซ็ตฟอร์มอัตโนมัติ
+  } else {
+    logMessage("เกิดข้อผิดพลาด ❌");
+  }
+}
+
+btnSubmit.addEventListener("click", submitForm);
+
+btnReset.addEventListener("click", () => {
+  Object.keys(formElements).forEach(key => {
+    if (formElements[key].tagName === "INPUT") {
+      formElements[key].value = "";
+    }
+  });
+  logMessage("Log จะแสดงที่นี่…");
 });
 
-// รีเซ็ตฟอร์ม
-document.getElementById('btnReset').addEventListener('click', function(){
-  document.getElementById('name').value = "";
-  document.getElementById('employeeId').value = "";
-  document.getElementById('position').value = "";
-  document.getElementById('department').value = "";
-  document.getElementById('email').value = "";
-  document.getElementById('phone').value = "";
+btnBack.addEventListener("click", () => {
+  window.location.href = "index.html"; // กลับไปหน้า Login
 });
-
-// กลับไปหน้า Login
-document.getElementById('btnBack').addEventListener('click', function(){
-  window.location.href = "index.html";
-});
-
-
