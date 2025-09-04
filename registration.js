@@ -1,96 +1,92 @@
-const scriptURL = "https://script.google.com/macros/s/AKfycbzP2fm5Io9vZvP8GC8pQ7ybdgVZ1QotfUEeGzKomoWZ5xihWmiIqdhrkDz06RXoLBrNvg/exec";
-
 const nameInput = document.getElementById("name");
-const employeeInput = document.getElementById("employeeId");
+const employeeIdInput = document.getElementById("employeeId");
 const positionInput = document.getElementById("position");
 const departmentInput = document.getElementById("department");
 const emailInput = document.getElementById("email");
 const phoneInput = document.getElementById("phone");
 
-const employeeError = document.getElementById("employee-error");
-const emailError = document.getElementById("email-error");
+const btnSubmit = document.getElementById("btnSubmit");
+const btnReset = document.getElementById("btnReset");
+const btnBack = document.getElementById("btnBack");
 const logDiv = document.getElementById("log");
 
-// ฟังก์ชันตรวจสอบซ้ำ (GET)
-async function checkDuplicate(field, value) {
-  try {
-    const url = `${scriptURL}?${field}=${encodeURIComponent(value)}&checkOnly=true`;
-    const res = await fetch(url);
-    const data = await res.json();
-    return data.exists;
-  } catch (err) {
-    logDiv.textContent += "\n❌ Error checking duplicates: " + err;
-    return false;
+// ฟังก์ชันโชว์ Log พร้อมไอคอนและสี
+function showLog(message, type="info") {
+  let color, icon;
+  switch(type) {
+    case "error":
+      color = "#e74c3c"; // แดง
+      icon = "❌";
+      break;
+    case "success":
+      color = "#2ecc71"; // เขียว
+      icon = "✅";
+      break;
+    case "warning":
+      color = "#f39c12"; // ส้ม
+      icon = "⚠️";
+      break;
+    default:
+      color = "#34495e"; // ดำเข้ม
+      icon = "ℹ️";
   }
+  const p = document.createElement("p");
+  p.innerHTML = `<span style="font-weight:bold; margin-right:6px;">${icon}</span>${message}`;
+  p.style.color = color;
+  p.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+  p.style.margin = "0.2rem 0";
+  logDiv.appendChild(p);
+  logDiv.scrollTop = logDiv.scrollHeight;
 }
 
-// ตรวจสอบ realtime
-employeeInput.addEventListener("blur", async () => {
-  employeeError.textContent = "";
-  if (!employeeInput.value) return;
-  const exists = await checkDuplicate("employeeId", employeeInput.value.trim());
-  if (exists) employeeError.textContent = "❌ รหัสพนักงานนี้มีอยู่แล้ว!";
+// Reset ฟอร์ม
+btnReset.addEventListener("click", () => {
+  [nameInput, employeeIdInput, positionInput, departmentInput, emailInput, phoneInput].forEach(i => i.value = "");
+  logDiv.innerHTML = "";
+  showLog("♻ ฟอร์มถูกรีเซ็ตเรียบร้อย", "info");
 });
 
-emailInput.addEventListener("blur", async () => {
-  emailError.textContent = "";
-  if (!emailInput.value) return;
-  const exists = await checkDuplicate("email", emailInput.value.trim());
-  if (exists) emailError.textContent = "❌ อีเมลนี้มีอยู่แล้ว!";
+// กลับหน้า Login
+btnBack.addEventListener("click", () => {
+  window.location.href = "index.html";
 });
 
-// Submit
-document.getElementById("btnSubmit").addEventListener("click", async (e) => {
-  e.preventDefault();
-  employeeError.textContent = "";
-  emailError.textContent = "";
+// Submit ฟอร์ม
+btnSubmit.addEventListener("click", () => {
+  const name = nameInput.value.trim();
+  const employeeId = employeeIdInput.value.trim();
+  const position = positionInput.value.trim();
+  const department = departmentInput.value.trim();
+  const email = emailInput.value.trim();
+  const phone = phoneInput.value.trim();
 
-  const idExists = await checkDuplicate("employeeId", employeeInput.value.trim());
-  const emailExists = await checkDuplicate("email", emailInput.value.trim());
-
-  if (idExists) employeeError.textContent = "❌ รหัสพนักงานนี้มีอยู่แล้ว!";
-  if (emailExists) emailError.textContent = "❌ อีเมลนี้มีอยู่แล้ว!";
-  if (idExists || emailExists) return;
-
-  const formData = new FormData();
-  formData.append("name", nameInput.value);
-  formData.append("employeeId", employeeInput.value);
-  formData.append("position", positionInput.value);
-  formData.append("department", departmentInput.value);
-  formData.append("email", emailInput.value);
-  formData.append("phone", phoneInput.value);
-
-  try {
-    const res = await fetch(scriptURL, {
-      method: "POST",
-      body: formData
-    });
-    const data = await res.json();
-    logDiv.textContent += "\n✅ " + (data.message || "สมัครเรียบร้อย!");
-    formReset();
-  } catch (err) {
-    logDiv.textContent += "\n⚠️ Error submitting: " + err;
+  // ตรวจสอบค่าว่าง
+  if (!name || !employeeId || !position || !department || !email || !phone) {
+    showLog("กรุณากรอกข้อมูลให้ครบทุกช่อง", "error");
+    return;
   }
-});
 
-// Reset form
-document.getElementById("btnReset").addEventListener("click", (e) => {
-  e.preventDefault();
-  formReset();
-});
+  // ตรวจสอบอีเมล์ @airportthai.co.th
+  if (!email.endsWith("@airportthai.co.th")) {
+    showLog("อีเมล์ต้องลงท้ายด้วย @airportthai.co.th", "error");
+    return;
+  }
 
-function formReset() {
-  nameInput.value = "";
-  employeeInput.value = "";
-  positionInput.value = "";
-  departmentInput.value = "";
-  emailInput.value = "";
-  phoneInput.value = "";
-  employeeError.textContent = "";
-  emailError.textContent = "";
-}
+  // เรียก Google Apps Script ผ่าน JSONP
+  const callbackName = `jsonpCallback_${Date.now()}`;
+  window[callbackName] = function(response) {
+    if (response.status === "success") {
+      showLog("สมัครเรียบร้อยแล้ว", "success");
+    } else if (response.status === "duplicate") {
+      showLog("รหัสพนักงานหรืออีเมล์ซ้ำ ระบบไม่บันทึก", "warning");
+    } else {
+      showLog("เกิดข้อผิดพลาด กรุณาลองใหม่", "error");
+    }
+    delete window[callbackName];
+  };
 
-// Back
-document.getElementById("btnBack").addEventListener("click", () => {
-  window.location.href = "login.html"; // ปรับ path หน้า login ของจริง
+  const script = document.createElement("script");
+  const url = `https://script.google.com/macros/s/AKfycbzP2fm5Io9vZvP8GC8pQ7ybdgVZ1QotfUEeGzKomoWZ5xihWmiIqdhrkDz06RXoLBrNvg/exec?name=${encodeURIComponent(name)}&employeeId=${encodeURIComponent(employeeId)}&position=${encodeURIComponent(position)}&department=${encodeURIComponent(department)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}&callback=${callbackName}`;
+  script.src = url;
+  document.body.appendChild(script);
 });
