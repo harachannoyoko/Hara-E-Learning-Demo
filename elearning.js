@@ -1,47 +1,76 @@
-const ENDPOINT_EVENT = "https://script.google.com/macros/s/AKfycbxYvpBYs3UhTOK-9ZMSlOGP_kilYysbCylKdNc5mMmCDHZ7MXclyktt4-U4eYwl-NDvuw/exec";
+// === CONFIG ===
+const GAS_PROGRESS_URL = "https://script.google.com/macros/s/AKfycbzTTyobSPZ_Gg-elLDRvbP2HlrCkZEbN_I2Fs7Fx_yQnIsE5km_ObUplyD_cFwcs9x8/exec";
 
-const name = sessionStorage.getItem("name");
-const employeeId = sessionStorage.getItem("employeeId");
+// === ELEMENTS ===
+const video = document.getElementById('trainingVideo');
+const progressText = document.getElementById('progressText');
+const progressFill = document.getElementById('progressFill');
+const logDiv = document.getElementById('log');
+const btnComplete = document.getElementById('btnComplete');
 
-if(!name || !employeeId){
-  window.location.href = "index.html";
+// === SESSION INFO ===
+const sessionId = localStorage.getItem('sessionId');
+const employeeId = localStorage.getItem('employeeId');
+const name = localStorage.getItem('name');
+const videoId = "VID001";
+
+document.getElementById('displayName').innerText = name || "ไม่ทราบชื่อ";
+
+// === LOG FUNCTION ===
+function addLog(msg) {
+  const time = new Date().toLocaleTimeString();
+  logDiv.innerHTML += `<div>[${time}] ${msg}</div>`;
+  logDiv.scrollTop = logDiv.scrollHeight;
 }
 
-document.getElementById("displayName").textContent = name;
-
-function log(msg){
-  document.getElementById("log").innerHTML = msg;
-}
-
-function sendEvent(event, params={}){
-  const callbackName = "eventCallback";
-  window[callbackName] = function(res){
-    if(res.status === "success"){
-      log(`✅ Event '${event}' ส่งเรียบร้อย`);
+// === SAVE PROGRESS FUNCTION ===
+function saveProgress(progress) {
+  fetch(GAS_PROGRESS_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      sessionId,
+      employeeId,
+      name,
+      videoId,
+      progress
+    }),
+    headers: { 'Content-Type': 'application/json' }
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === "success") {
+      addLog(`Progress saved: ${progress}%`);
     } else {
-      log(`❌ Event '${event}' ผิดพลาด: ${res.message}`);
+      addLog(`Error saving progress`);
     }
-    delete window[callbackName];
-    document.body.removeChild(script);
-  };
-
-  const query = new URLSearchParams({event, name, employeeId, ...params, callback: callbackName}).toString();
-  const script = document.createElement("script");
-  script.src = `${ENDPOINT_EVENT}?${query}`;
-  document.body.appendChild(script);
+  })
+  .catch(err => addLog("Fetch error: " + err));
 }
 
-document.getElementById("btnPing").addEventListener("click", () => {
-  const progress = Math.floor(Math.random()*100);
-  sendEvent("ping", {progress});
+// === AUTO UPDATE PROGRESS EVERY 10 SECONDS ===
+setInterval(() => {
+  if (!video.duration || video.duration === 0) return;
+  const progress = Math.floor((video.currentTime / video.duration) * 100);
+  progressText.textContent = progress + "%";
+  progressFill.style.width = progress + "%";
+  saveProgress(progress);
+}, 10000);
+
+// === COMPLETE BUTTON ===
+btnComplete.addEventListener('click', () => {
+  saveProgress(100);
+  progressText.textContent = "100%";
+  progressFill.style.width = "100%";
+  addLog("✅ Video marked as complete");
 });
 
-document.getElementById("btnQuiz").addEventListener("click", () => {
-  const correct = Math.random() > 0.5 ? 1 : 0;
-  sendEvent("quiz", {quizId:"Q1", quizCorrect:correct});
-});
-
-document.getElementById("btnLogout").addEventListener("click", () => {
-  sessionStorage.clear();
+// === LOGOUT ===
+document.getElementById('btnLogout').addEventListener('click', () => {
+  localStorage.clear();
   window.location.href = "index.html";
+});
+
+// === QUIZ BUTTON ===
+document.getElementById('btnQuiz').addEventListener('click', () => {
+  window.location.href = "quiz.html"; // สร้างหน้า quiz ต่อภายหลัง
 });
