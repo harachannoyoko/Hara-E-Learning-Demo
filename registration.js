@@ -1,41 +1,41 @@
-const formElements = {
-  name: document.getElementById("name"),
-  employeeId: document.getElementById("employeeId"),
-  position: document.getElementById("position"),
-  department: document.getElementById("department"),
-  email: document.getElementById("email"),
-  phone: document.getElementById("phone"),
-  log: document.getElementById("log")
-};
+document.getElementById("btnSubmit").addEventListener("click", function() {
+  const name = document.getElementById("name").value.trim();
+  const employeeId = document.getElementById("employeeId").value.trim();
+  const position = document.getElementById("position").value.trim();
+  const department = document.getElementById("department").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const log = document.getElementById("log");
 
-document.getElementById("btnSubmit").addEventListener("click", async () => {
-  const payload = {
-    name: formElements.name.value,
-    employeeId: formElements.employeeId.value,
-    position: formElements.position.value,
-    department: formElements.department.value,
-    email: formElements.email.value,
-    phone: formElements.phone.value
+  if (!name || !employeeId) {
+    log.textContent = "กรุณากรอกชื่อและรหัสพนักงาน";
+    return;
+  }
+
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwbXhYyNQQRfBipc6muQvcU_euLgTBqSI7WjpZ1OZ-3uvh1qheuu32JFVCJW_NJlF-8bA/exec";
+
+  // JSONP
+  const callbackName = "jsonpCallback_" + Date.now();
+  window[callbackName] = function(response) {
+    if (response.status === "success") {
+      log.textContent = "✅ ลงทะเบียนสำเร็จ!";
+      document.getElementById("name").value = "";
+      document.getElementById("employeeId").value = "";
+      document.getElementById("position").value = "";
+      document.getElementById("department").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("phone").value = "";
+    } else {
+      log.textContent = "❌ ลงทะเบียนล้มเหลว!";
+    }
+    // ลบ script หลังโหลดเสร็จ
+    document.body.removeChild(scriptTag);
+    delete window[callbackName];
   };
 
-  try {
-    const res = await fetch("YOUR_GAS_WEB_APP_EXEC_URL", {
-      method: "POST",
-      body: JSON.stringify(payload),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+  const params = `?callback=${callbackName}&name=${encodeURIComponent(name)}&employeeId=${encodeURIComponent(employeeId)}&position=${encodeURIComponent(position)}&department=${encodeURIComponent(department)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}`;
 
-    const data = await res.json();
-    if (data.status === "success") {
-      formElements.log.textContent = "✅ ลงทะเบียนสำเร็จ!";
-      // รีเซ็ตฟอร์ม
-      Object.values(formElements).forEach(el => { if(el.tagName==="INPUT") el.value = ""; });
-    } else {
-      formElements.log.textContent = "❌ เกิดข้อผิดพลาด";
-    }
-  } catch (err) {
-    formElements.log.textContent = "❌ เกิดข้อผิดพลาด: " + err;
-  }
+  const scriptTag = document.createElement("script");
+  scriptTag.src = scriptURL + params;
+  document.body.appendChild(scriptTag);
 });
