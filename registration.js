@@ -1,46 +1,45 @@
-const ENDPOINT_REG = "https://script.google.com/macros/s/AKfycbzPgMepC4JuX_4C49_2OqzmlfdLwUYgxOITZGG1wRsosu-5fxugrM-XReCLF7oHEAGwqg/exec";
+// registration.js (JSONP Version)
 
-document.getElementById("btnSubmit").addEventListener("click", () => {
-  const data = {
-    name: document.getElementById("name").value.trim(),
-    employeeId: document.getElementById("employeeId").value.trim(),
-    position: document.getElementById("position").value.trim(),
-    department: document.getElementById("department").value.trim(),
-    email: document.getElementById("email").value.trim(),
-    phone: document.getElementById("phone").value.trim()
-  };
+document.getElementById('btnSubmit').addEventListener('click', function() {
+  const name = document.getElementById('name').value.trim();
+  const employeeId = document.getElementById('employeeId').value.trim();
 
-  if(!data.name || !data.employeeId || !data.position || !data.department || !data.email || !data.phone){
-    log("⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง");
+  if(!name || !employeeId){
+    alert("กรุณากรอกชื่อและรหัสพนักงาน");
     return;
   }
 
-  const callbackName = "registerCallback";
-  window[callbackName] = function(res){
-    if(res.status === "success"){
-      log("✅ สมัครเรียบร้อย!");
-      document.getElementById("btnReset").click();
+  // สร้าง callback function แบบ global
+  window.handleRegistrationResponse = function(response){
+    if(response.status === "found"){
+      alert("มีข้อมูลอยู่แล้ว!");
     } else {
-      log("❌ เกิดข้อผิดพลาด: " + res.message);
+      alert("ลงทะเบียนสำเร็จ!");
     }
-    delete window[callbackName];
-    document.body.removeChild(script);
+    // ทำความสะอาด script tag
+    const script = document.getElementById('jsonpScript');
+    if(script) script.remove();
   };
 
-  const script = document.createElement("script");
-  script.src = `${ENDPOINT_REG}?name=${encodeURIComponent(data.name)}&employeeId=${encodeURIComponent(data.employeeId)}&position=${encodeURIComponent(data.position)}&department=${encodeURIComponent(data.department)}&email=${encodeURIComponent(data.email)}&phone=${encodeURIComponent(data.phone)}&callback=${callbackName}`;
+  // สร้าง script tag เพื่อเรียก JSONP
+  const script = document.createElement('script');
+  script.id = 'jsonpScript';
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbwWYf-Q4oeT_NR0EihEwuqs3Jgm8Lbd_eUs2vaLUHmFotkOPwIw2k_jiwhQxT4NM3yJbg/exec"; // ใส่ URL GAS ของพี่ตรงนี้
+  script.src = `${GAS_URL}?callback=handleRegistrationResponse&name=${encodeURIComponent(name)}&employeeId=${encodeURIComponent(employeeId)}`;
   document.body.appendChild(script);
 });
 
-document.getElementById("btnReset").addEventListener("click", () => {
-  document.querySelectorAll("input").forEach(i => i.value = "");
-  log("♻ รีเซ็ตข้อมูลเรียบร้อย");
+// รีเซ็ตฟอร์ม
+document.getElementById('btnReset').addEventListener('click', function(){
+  document.getElementById('name').value = "";
+  document.getElementById('employeeId').value = "";
+  document.getElementById('position').value = "";
+  document.getElementById('department').value = "";
+  document.getElementById('email').value = "";
+  document.getElementById('phone').value = "";
 });
 
-document.getElementById("btnBack").addEventListener("click", () => {
+// กลับไปหน้า Login
+document.getElementById('btnBack').addEventListener('click', function(){
   window.location.href = "index.html";
 });
-
-function log(msg){
-  document.getElementById("log").innerHTML = msg;
-}
