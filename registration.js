@@ -1,66 +1,37 @@
-const formElements = {
-  name: document.getElementById("name"),
-  employeeId: document.getElementById("employeeId"),
-  position: document.getElementById("position"),
-  department: document.getElementById("department"),
-  email: document.getElementById("email"),
-  phone: document.getElementById("phone"),
-  log: document.getElementById("log")
-};
+document.getElementById("btnSubmit").addEventListener("click", function() {
+  var name = document.getElementById("name").value;
+  var employeeId = document.getElementById("employeeId").value;
+  var position = document.getElementById("position").value;
+  var department = document.getElementById("department").value;
+  var email = document.getElementById("email").value;
+  var phone = document.getElementById("phone").value;
+  var log = document.getElementById("log");
 
-const btnSubmit = document.getElementById("btnSubmit");
-const btnReset = document.getElementById("btnReset");
-const btnBack = document.getElementById("btnBack");
+  var script = document.createElement("script");
+  var callbackName = "jsonpCallback_" + Date.now();
 
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwbXhYyNQQRfBipc6muQvcU_euLgTBqSI7WjpZ1OZ-3uvh1qheuu32JFVCJW_NJlF-8bA/exec";
-
-function logMessage(msg) {
-  formElements.log.innerText = msg;
-}
-
-function submitForm() {
-  const params = {
-    callback: "handleResponse",
-    name: formElements.name.value,
-    employeeId: formElements.employeeId.value,
-    position: formElements.position.value,
-    department: formElements.department.value,
-    email: formElements.email.value,
-    phone: formElements.phone.value
+  window[callbackName] = function(data) {
+    if (data.status === "added") {
+      log.textContent = "✅ ลงทะเบียนสำเร็จ!";
+    } else if (data.status === "duplicate") {
+      log.textContent = "⚠ ข้อมูลซ้ำ ไม่สามารถลงทะเบียนได้";
+    } else {
+      log.textContent = "❌ เกิดข้อผิดพลาด";
+    }
+    // cleanup
+    delete window[callbackName];
+    document.body.removeChild(script);
   };
 
-  // สร้าง script tag สำหรับ JSONP
-  const script = document.createElement("script");
-  const query = Object.keys(params)
-    .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
-    .join("&");
-  script.src = `${GAS_URL}?${query}`;
+  var url = "https://script.google.com/macros/s/AKfycbwbXhYyNQQRfBipc6muQvcU_euLgTBqSI7WjpZ1OZ-3uvh1qheuu32JFVCJW_NJlF-8bA/exec" +
+            "?callback=" + callbackName +
+            "&name=" + encodeURIComponent(name) +
+            "&employeeId=" + encodeURIComponent(employeeId) +
+            "&position=" + encodeURIComponent(position) +
+            "&department=" + encodeURIComponent(department) +
+            "&email=" + encodeURIComponent(email) +
+            "&phone=" + encodeURIComponent(phone);
+
+  script.src = url;
   document.body.appendChild(script);
-}
-
-// callback ของ JSONP
-function handleResponse(response) {
-  if (response.status === "found") {
-    logMessage("ข้อมูลนี้มีอยู่แล้วในระบบ ✅");
-  } else if (response.status === "added") {
-    logMessage("ลงทะเบียนสำเร็จ 🎉");
-    btnReset.click(); // รีเซ็ตฟอร์มอัตโนมัติ
-  } else {
-    logMessage("เกิดข้อผิดพลาด ❌");
-  }
-}
-
-btnSubmit.addEventListener("click", submitForm);
-
-btnReset.addEventListener("click", () => {
-  Object.keys(formElements).forEach(key => {
-    if (formElements[key].tagName === "INPUT") {
-      formElements[key].value = "";
-    }
-  });
-  logMessage("Log จะแสดงที่นี่…");
-});
-
-btnBack.addEventListener("click", () => {
-  window.location.href = "index.html"; // กลับไปหน้า Login
 });
