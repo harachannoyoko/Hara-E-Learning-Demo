@@ -1,65 +1,50 @@
-// === CONFIG ===
-const GAS_PROGRESS_URL = "https://script.google.com/macros/s/AKfycbyiZeKZD8FgZOUL2Nlh2pyypb1cPU7iG9tMXrx_KHgPNSpEIMlS0BAo9MYengtpyyKDlA/exec";
-const VIDEO_ID = "13puKcmpSmgCDFydEccWTG_kC4w0aW8xK"; // Google Drive file ID
-const VIDEO_URL = `https://drive.google.com/uc?export=download&id=${VIDEO_ID}`;
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwbXhYyNQQRfBipc6muQvcU_euLgTBqSI7WjpZ1OZ-3uvh1qheuu32JFVCJW_NJlF-8bA/exec";
 
-// === DOM Elements ===
-const logBox = document.getElementById("log");
-const displayName = document.getElementById("displayName");
-const videoPlayer = document.getElementById("videoPlayer");
-const videoSource = document.getElementById("videoSource");
+// ใส่ Video ID ที่ได้จาก YouTube
+const VIDEO_ID = "dQw4w9WgXcQ"; 
 
-// === Session Info ===
-const name = sessionStorage.getItem("name");
-const employeeId = sessionStorage.getItem("employeeId");
+// โหลดข้อมูลวิดีโอ
+async function loadVideo(videoId) {
+  const res = await fetch(`${GAS_URL}?id=${videoId}`);
+  const data = await res.json();
+  console.log("Video Info:", data);
 
-// === Helpers ===
-function log(msg){
-  logBox.innerHTML += msg + "<br>";
-  logBox.scrollTop = logBox.scrollHeight;
+  if (data.items && data.items.length > 0) {
+    const title = data.items[0].snippet.title;
+    const duration = data.items[0].contentDetails.duration;
+    document.getElementById("video-title").innerText = title;
+    document.getElementById("video-player").src = `https://www.youtube.com/embed/${videoId}`;
+    console.log(`Duration: ${duration}`);
+  } else {
+    alert("Video not found or invalid Video ID");
+  }
 }
 
-// === INIT ===
-if(!name || !employeeId){
-  alert("⚠️ ไม่พบ session กรุณาเข้าสู่ระบบใหม่");
-  window.location.href = "index.html";
-} else {
-  displayName.textContent = name;
-  videoSource.src = VIDEO_URL;
-  videoPlayer.load();
-  log("✅ โหลดวิดีโอเรียบร้อย");
-}
-
-// === Event: Update Progress ===
-document.getElementById("btnPing").addEventListener("click", ()=>{
-  const progress = Math.round((videoPlayer.currentTime / videoPlayer.duration) * 100);
+// ส่ง Progress
+async function sendProgress(progress) {
   const payload = {
-    event: "video_progress",
+    name: "Hara",
+    employeeId: "EMP001",
     videoId: VIDEO_ID,
-    name: name,
-    employeeId: employeeId,
-    progress: progress,
-    timestamp: new Date().toISOString()
+    sessionId: "SESSION123",
+    progress: progress
   };
 
-  fetch(GAS_PROGRESS_URL, {
+  const res = await fetch(GAS_URL, {
     method: "POST",
-    mode: "cors",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
-  })
-  .then(r => r.json())
-  .then(data => log(`📡 Progress updated: ${progress}%`))
-  .catch(err => log("❌ Error: "+err));
-});
+  });
 
-// === Event: Quiz (placeholder) ===
-document.getElementById("btnQuiz").addEventListener("click", ()=>{
-  alert("ฟีเจอร์ Quiz ยังไม่เปิดใช้งานครับ");
-});
+  const result = await res.json();
+  console.log("Progress Response:", result);
+}
 
-// === Event: Logout ===
-document.getElementById("btnLogout").addEventListener("click", ()=>{
-  sessionStorage.clear();
-  window.location.href = "index.html";
-});
+// ทดสอบอัพเดท Progress ทุก ๆ 5 วินาที
+setInterval(() => {
+  const randomProgress = Math.floor(Math.random() * 100);
+  sendProgress(randomProgress);
+}, 5000);
+
+// เรียกโหลดวิดีโอ
+loadVideo(VIDEO_ID);
