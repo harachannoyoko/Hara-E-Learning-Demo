@@ -1,50 +1,41 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registration - Hara E-Learning</title>
-  <style>
-    body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background:#f4f7fb; }
-    main { max-width:500px; margin:2rem auto; background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-    label { display:block; margin:0.5rem 0 0.2rem; }
-    input { width:100%; padding:0.6rem; border-radius:6px; border:1px solid #ccc; margin-bottom:1rem; }
-    button { padding:0.8rem; margin:0.3rem 0; width:100%; border:none; border-radius:8px; cursor:pointer; transition:0.2s; font-size:1rem;}
-    button#btnSubmit { background:#4CAF50; color:white; }
-    button#btnReset { background:#f44336; color:white; }
-    button#btnBack { background:#2196F3; color:white; }
-    #log { margin-top:1rem; padding:1rem; background:#f9f9f9; border:1px dashed #aaa; border-radius:8px; font-family:monospace; font-size:0.9rem; max-height:150px; overflow-y:auto;}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📋 Registration</title>
+<style>
+body { font-family:"Segoe UI",Tahoma,sans-serif; background:#f4f7fb; margin:0; padding:0; }
+main { max-width:500px; margin:2rem auto; background:white; padding:2rem; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+label { display:block; margin:0.5rem 0 0.2rem; }
+input { width:100%; padding:0.6rem; border-radius:6px; border:1px solid #ccc; margin-bottom:1rem; }
+button { padding:0.8rem; margin:0.3rem 0; width:100%; border:none; border-radius:8px; cursor:pointer; transition:0.2s; font-size:1rem;}
+button#btnSubmit { background:#4CAF50;color:white; }
+button#btnReset { background:#f44336;color:white; }
+button#btnBack { background:#2196F3;color:white; }
+#log { margin-top:1rem; padding:1rem; background:#f9f9f9; border:1px dashed #aaa; border-radius:8px; font-family:monospace; font-size:0.9rem; max-height:150px; overflow-y:auto;}
+</style>
 </head>
 <body>
-  <main>
-    <h2>📋 ลงทะเบียนผู้เรียน</h2>
-
-    <label>ชื่อ-นามสกุล</label>
-    <input type="text" id="name" placeholder="กรอกชื่อ-นามสกุล">
-
-    <label>รหัสพนักงาน (6 หลัก)</label>
-    <input type="text" id="employeeId" placeholder="เช่น 000001" maxlength="6">
-
-    <label>ตำแหน่ง</label>
-    <input type="text" id="position">
-
-    <label>ส่วนงาน</label>
-    <input type="text" id="department">
-
-    <label>อีเมล์บริษัท</label>
-    <input type="email" id="email">
-
-    <label>เบอร์โทรศัพท์</label>
-    <input type="text" id="phone">
-
-    <button id="btnSubmit">✅ สมัคร</button>
-    <button id="btnReset">♻ รีเซ็ต</button>
-    <button id="btnBack">⬅ กลับสู่หน้า Login</button>
-
-    <div id="log">Log จะแสดงที่นี่…</div>
-  </main>
-
-  <script src="registration.js"></script>
+<main>
+  <h2>📋 ลงทะเบียนผู้เรียน</h2>
+  <label>ชื่อ-นามสกุล</label>
+  <input type="text" id="name">
+  <label>รหัสพนักงาน (6 หลัก)</label>
+  <input type="text" id="employeeId">
+  <label>ตำแหน่ง</label>
+  <input type="text" id="position">
+  <label>ส่วนงาน</label>
+  <input type="text" id="department">
+  <label>อีเมล์บริษัท</label>
+  <input type="email" id="email">
+  <label>เบอร์โทรศัพท์</label>
+  <input type="text" id="phone">
+  <button id="btnSubmit">✅ สมัคร</button>
+  <button id="btnReset">♻ รีเซ็ต</button>
+  <button id="btnBack">⬅ กลับสู่หน้า Login</button>
+  <div id="log">Log จะแสดงที่นี่…</div>
+</main>
+<script src="registration.js"></script>
 </body>
 </html>
