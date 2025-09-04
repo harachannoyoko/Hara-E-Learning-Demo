@@ -86,7 +86,8 @@ btnSubmit.addEventListener("click", () => {
   };
 
   const script = document.createElement("script");
-  const url = `https://script.google.com/macros/s/AKfycbzP2fm5Io9vZvP8GC8pQ7ybdgVZ1QotfUEeGzKomoWZ5xihWmiIqdhrkDz06RXoLBrNvg/exec?name=${encodeURIComponent(name)}&employeeId=${encodeURIComponent(employeeId)}&position=${encodeURIComponent(position)}&department=${encodeURIComponent(department)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}&callback=${callbackName}`;
+  const url = `https://script.google.com/macros/s/AKfycbwnvak47K0J86zy1Idn6wnQv2JJyr756qlALQFEkaSeEkMtXDDaj6C1vkAUTEDmjc1HsA/exec?name=${encodeURIComponent(name)}&employeeId=${encodeURIComponent(employeeId)}&position=${encodeURIComponent(position)}&department=${encodeURIComponent(department)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}&callback=${callbackName}`;
   script.src = url;
   document.body.appendChild(script);
 });
+
