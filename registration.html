@@ -45,38 +45,6 @@
     <div id="log">Log จะแสดงที่นี่…</div>
   </main>
 
-  <script>
-    function jsonpCallback(result) {
-      const log = document.getElementById("log");
-      log.textContent = JSON.stringify(result, null, 2);
-    }
-
-    document.getElementById("btnSubmit").addEventListener("click", () => {
-      const name = document.getElementById("name").value;
-      const employeeId = document.getElementById("employeeId").value;
-      const position = document.getElementById("position").value;
-      const department = document.getElementById("department").value;
-      const email = document.getElementById("email").value;
-      const phone = document.getElementById("phone").value;
-
-      const script = document.createElement("script");
-      script.src = `https://script.google.com/macros/s/AKfycbzP2fm5Io9vZvP8GC8pQ7ybdgVZ1QotfUEeGzKomoWZ5xihWmiIqdhrkDz06RXoLBrNvg/exec?name=${encodeURIComponent(name)}&employeeId=${encodeURIComponent(employeeId)}&position=${encodeURIComponent(position)}&department=${encodeURIComponent(department)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}&callback=jsonpCallback`;
-      document.body.appendChild(script);
-    });
-
-    document.getElementById("btnReset").addEventListener("click", () => {
-      document.getElementById("name").value = "";
-      document.getElementById("employeeId").value = "";
-      document.getElementById("position").value = "";
-      document.getElementById("department").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("phone").value = "";
-      document.getElementById("log").textContent = "Log จะแสดงที่นี่…";
-    });
-
-    document.getElementById("btnBack").addEventListener("click", () => {
-      window.location.href = "index.html";
-    });
-  </script>
+  <script src="registration.js"></script>
 </body>
 </html>
