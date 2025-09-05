@@ -1,4 +1,4 @@
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwnvak47K0J86zy1Idn6wnQv2JJyr756qlALQFEkaSeEkMtXDDaj6C1vkAUTEDmjc1HsA/exec";
+const GAS_URL = "YOUR_DEPLOYED_GAS_URL_HERE"; // ใส่ URL หลัง Deploy
 const logEl = document.getElementById("log");
 
 function log(message) {
